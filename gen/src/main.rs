@@ -1,57 +1,48 @@
-use axum::{
-    routing::{get, post},
-    http::StatusCode,
-    Json, Router,
-};
-use serde::{Deserialize, Serialize};
+use axum::{body::Body, extract::Path, http::StatusCode, response::Response, routing::get, Router};
+use std::fs;
+use tower_http::trace::TraceLayer;
+use tracing::info;
 
 #[tokio::main]
 async fn main() {
     // initialize tracing
-    tracing_subscriber::fmt::init();
+    tracing_subscriber::fmt()
+        .with_max_level(tracing::Level::DEBUG)
+        .init();
 
     // build our application with a route
     let app = Router::new()
-        // `GET /` goes to `root`
         .route("/", get(root))
-        // `POST /users` goes to `create_user`
-        .route("/users", post(create_user));
+        .route("/*rest", get(other))
+        .layer(TraceLayer::new_for_http());
+
+    let addr = "0.0.0.0:8080";
+
+    info!("listen {}", addr);
 
     // run our app with hyper, listening globally on port
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
 
 // basic handler that responds with a static string
-async fn root() -> &'static str {
-    "Hello, World!"
+async fn root() -> Response<Body> {
+    other(Path("index.html".to_string())).await
 }
 
-async fn create_user(
-    // this argument tells axum to parse the request body
-    // as JSON into a `CreateUser` type
-    Json(payload): Json<CreateUser>,
-) -> (StatusCode, Json<User>) {
-    // insert your application logic here
-    let user = User {
-        id: 1337,
-        username: payload.username,
-    };
+// basic handler that responds with a static string
+async fn other(Path(path): Path<String>) -> Response<Body> {
+    let src = path.strip_suffix(".html").map(|x| format!("src/{}.md", x));
 
-    // this will be converted into a JSON response
-    // with a status code of `201 Created`
-    (StatusCode::CREATED, Json(user))
-}
-
-// the input to our `create_user` handler
-#[derive(Deserialize)]
-struct CreateUser {
-    username: String,
-}
-
-// the output to our `create_user` handler
-#[derive(Serialize)]
-struct User {
-    id: u64,
-    username: String,
+    match fs::metadata(src.unwrap()) {
+        Ok(metadata) => Response::builder()
+            .status(StatusCode::OK)
+            .body(Body::from(format!("file found: {:?}", metadata)))
+            .unwrap(),
+        Err(e) => Response::builder()
+            .status(StatusCode::NOT_FOUND)
+            .header("content-type", "text/plain")
+            .body(Body::from(format!("failed to find {}: {}", path, e)))
+            .unwrap(),
+    }
 }
