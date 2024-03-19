@@ -1,0 +1,3 @@
+# flyctl launch added from gen/.gitignore
+gen/target
+fly.toml
