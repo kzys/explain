@@ -15,6 +15,10 @@ async fn main() {
     let app = Router::new()
         .route("/", get(root))
         .route("/*rest", get(other))
+        .route("/favicon.ico", get(|| async {
+            // To prevent 404.
+            "".to_string()
+        }))
         .layer(TraceLayer::new_for_http());
 
     let addr = "0.0.0.0:8080";
