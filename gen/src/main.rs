@@ -1,5 +1,6 @@
 use axum::{body::Body, extract::Path, http::StatusCode, response::Response, routing::get, Router};
-use std::fs;
+use pulldown_cmark::{html, Parser};
+use std::{fs, fs::File, io::BufReader, io::Read, path};
 use tower_http::trace::TraceLayer;
 use tracing::info;
 
@@ -32,17 +33,42 @@ async fn root() -> Response<Body> {
 
 // basic handler that responds with a static string
 async fn other(Path(path): Path<String>) -> Response<Body> {
-    let src = path.strip_suffix(".html").map(|x| format!("src/{}.md", x));
+    let src_dir = path::Path::new("src");
+    let mut src_path = src_dir.join(path);
 
-    match fs::metadata(src.unwrap()) {
-        Ok(metadata) => Response::builder()
+    src_path.set_extension("md");
+
+    if src_path.exists() {
+        let f = File::open(src_path);
+        let mut buf_reader = BufReader::new(f.unwrap());
+        let mut content = String::new();
+        buf_reader.read_to_string(&mut content).unwrap();
+
+        let parser = Parser::new(&content);
+        let mut html_output = String::new();
+        html::push_html(&mut html_output, parser);
+
+        return Response::builder()
+            .header("content-type", "text/html")
             .status(StatusCode::OK)
-            .body(Body::from(format!("file found: {:?}", metadata)))
-            .unwrap(),
+            .body(Body::from(html_output))
+            .unwrap();
+    }
+
+    let src = src_path.clone();
+
+    match fs::metadata(src.clone()) {
+        Ok(metadata) => {
+            let f = File::open(src.clone());
+            Response::builder()
+                .status(StatusCode::OK)
+                .body(Body::from(format!("file found: {:?}", metadata)))
+                .unwrap()
+        }
         Err(e) => Response::builder()
             .status(StatusCode::NOT_FOUND)
             .header("content-type", "text/plain")
-            .body(Body::from(format!("failed to find {}: {}", path, e)))
+            .body(Body::from(format!("failed to find {:?}: {}", src, e)))
             .unwrap(),
     }
 }

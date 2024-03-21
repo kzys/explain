@@ -1,3 +1,6 @@
+build:
+	cd gen && cargo build
+
 deploy:
 	fly deploy
 
