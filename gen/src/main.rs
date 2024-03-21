@@ -31,12 +31,27 @@ async fn root() -> Response<Body> {
     other(Path("index.html".to_string())).await
 }
 
+fn find_source(path: &str) -> path::PathBuf {
+    let src_dir = path::Path::new("src");
+    let mut src_path = src_dir.join(&path);
+
+    if path.ends_with("/") {
+        src_path.join("index.md")
+    } else {
+        src_path.set_extension("md");
+        src_path
+    }
+}
+
+#[test]
+fn test_find_source() {
+    assert_eq!(find_source("index.html"), path::Path::new("src/index.md"));
+    assert_eq!(find_source("foo/"), path::Path::new("src/foo/index.md"));
+}
+
 // basic handler that responds with a static string
 async fn other(Path(path): Path<String>) -> Response<Body> {
-    let src_dir = path::Path::new("src");
-    let mut src_path = src_dir.join(path);
-
-    src_path.set_extension("md");
+    let src_path = find_source(&path);
 
     if src_path.exists() {
         let f = File::open(src_path);

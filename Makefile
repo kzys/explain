@@ -10,3 +10,6 @@ run:
 
 fmt:
 	cd gen && cargo fmt
+
+test:
+	cd gen && cargo tarpaulin
