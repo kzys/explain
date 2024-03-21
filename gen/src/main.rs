@@ -1,11 +1,13 @@
 use axum::{body::Body, extract::Path, http::StatusCode, response::Response, routing::get, Router};
 use pulldown_cmark::{html, Parser};
 use std::{fs, fs::File, io::BufReader, io::Read, path};
+use std::error::Error;
+use std::result::Result;
 use tower_http::trace::TraceLayer;
 use tracing::info;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Box<dyn Error>> {
     // initialize tracing
     tracing_subscriber::fmt()
         .with_max_level(tracing::Level::DEBUG)
@@ -26,8 +28,9 @@ async fn main() {
     info!("listen {}", addr);
 
     // run our app with hyper, listening globally on port
-    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+    let listener = tokio::net::TcpListener::bind(addr).await?;
+    axum::serve(listener, app).await?;
+    Ok(())
 }
 
 // basic handler that responds with a static string
