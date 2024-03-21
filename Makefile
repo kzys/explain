@@ -12,4 +12,4 @@ fmt:
 	cd gen && cargo fmt
 
 test:
-	cd gen && cargo tarpaulin
+	cd gen && cargo tarpaulin --skip-clean
