@@ -1,10 +1,20 @@
-use axum::{body::Body, extract::Path, http::StatusCode, response::Response, routing::get, Router};
-use pulldown_cmark::{html, Parser};
-use std::{fs, fs::File, io::BufReader, io::Read, path};
+use axum::extract::{Path, State};
+use axum::{body::Body, http::StatusCode, response::Response, routing::get, Router};
+use minijinja::Environment;
+use serde::Serialize;
 use std::error::Error;
 use std::result::Result;
+use std::{fs, fs::File, io::BufReader, io::Read, path};
 use tower_http::trace::TraceLayer;
 use tracing::info;
+
+mod layout;
+mod page;
+
+#[derive(Clone)]
+struct AppState<'a> {
+    env: Environment<'a>,
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -13,15 +23,22 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .with_max_level(tracing::Level::DEBUG)
         .init();
 
+    let mut env = Environment::new();
+    layout::register_template(&mut env, "index.html", "layout/index.html")?;
+
     // build our application with a route
     let app = Router::new()
-        .route("/", get(root))
+        .route("/", get(other))
         .route("/*rest", get(other))
-        .route("/favicon.ico", get(|| async {
-            // To prevent 404.
-            "".to_string()
-        }))
-        .layer(TraceLayer::new_for_http());
+        .route(
+            "/favicon.ico",
+            get(|| async {
+                // To prevent 404.
+                "".to_string()
+            }),
+        )
+        .layer(TraceLayer::new_for_http())
+        .with_state(AppState { env });
 
     let addr = "0.0.0.0:8080";
 
@@ -34,9 +51,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
 }
 
 // basic handler that responds with a static string
+/*
 async fn root() -> Response<Body> {
     other(Path("index.html".to_string())).await
 }
+*/
 
 fn find_source(path: &str) -> path::PathBuf {
     let src_dir = path::Path::new("src");
@@ -56,24 +75,33 @@ fn test_find_source() {
     assert_eq!(find_source("foo/"), path::Path::new("src/foo/index.md"));
 }
 
+#[derive(Serialize, Debug)]
+struct PageData {
+    title: String,
+    main: minijinja::value::Value,
+}
+
 // basic handler that responds with a static string
-async fn other(Path(path): Path<String>) -> Response<Body> {
+async fn other<'a>(path: Option<Path<String>>, state: State<AppState<'a>>) -> Response<Body> {
+    let path = path.unwrap_or(Path("index.html".to_string()));
+
     let src_path = find_source(&path);
 
     if src_path.exists() {
-        let f = File::open(src_path);
-        let mut buf_reader = BufReader::new(f.unwrap());
-        let mut content = String::new();
-        buf_reader.read_to_string(&mut content).unwrap();
+        let html = page::page(&src_path);
 
-        let parser = Parser::new(&content);
-        let mut html_output = String::new();
-        html::push_html(&mut html_output, parser);
+        let pd = PageData {
+            title: "Hello".to_string(),
+            main: minijinja::value::Value::from_safe_string(html),
+        };
+
+        let t = state.env.get_template("index.html").unwrap();
+        let s = t.render(&pd).unwrap();
 
         return Response::builder()
             .header("content-type", "text/html")
             .status(StatusCode::OK)
-            .body(Body::from(html_output))
+            .body(Body::from(s))
             .unwrap();
     }
 

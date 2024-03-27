@@ -7,4 +7,5 @@ FROM ubuntu:latest
 WORKDIR /app
 COPY --from=builder /app/gen/target/debug/gen /app/gen
 COPY src /app/src
+COPY layout /app/layout
 ENTRYPOINT [ "/app/gen" ]
