@@ -4,7 +4,18 @@ use std::io::{BufReader, Read};
 use std::path::Path;
 use yaml_rust::{yaml::Yaml, YamlLoader};
 
-pub fn page(path: &Path) -> String {
+pub struct Page {
+    front_matter: Vec<Yaml>,
+    pub body_html: String,
+}
+
+impl Page {
+    pub fn title(&self) -> &str {
+        self.front_matter[0]["title"].as_str().unwrap_or("???")
+    }
+}
+
+pub fn page(path: &Path) -> Page {
     let f = File::open(path);
     let mut buf_reader = BufReader::new(f.unwrap());
     let mut content = String::new();
@@ -25,5 +36,8 @@ pub fn page(path: &Path) -> String {
     let title = front_matter[0]["title"].as_str().unwrap_or("???");
     html_output.push_str(format!("<title>{}</title>", title).as_str());
     html::push_html(&mut html_output, parser);
-    return html_output;
+    return Page {
+        front_matter,
+        body_html: html_output,
+    };
 }

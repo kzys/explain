@@ -4,7 +4,7 @@ use minijinja::Environment;
 use serde::Serialize;
 use std::error::Error;
 use std::result::Result;
-use std::{fs, fs::File, io::BufReader, io::Read, path};
+use std::{fs, path};
 use tower_http::trace::TraceLayer;
 use tracing::info;
 
@@ -88,11 +88,11 @@ async fn other<'a>(path: Option<Path<String>>, state: State<AppState<'a>>) -> Re
     let src_path = find_source(&path);
 
     if src_path.exists() {
-        let html = page::page(&src_path);
+        let p = page::page(&src_path);
 
         let pd = PageData {
-            title: "Hello".to_string(),
-            main: minijinja::value::Value::from_safe_string(html),
+            title: p.title().to_string(),
+            main: minijinja::value::Value::from_safe_string(p.body_html.to_string()),
         };
 
         let t = state.env.get_template("index.html").unwrap();
@@ -108,13 +108,10 @@ async fn other<'a>(path: Option<Path<String>>, state: State<AppState<'a>>) -> Re
     let src = src_path.clone();
 
     match fs::metadata(src.clone()) {
-        Ok(metadata) => {
-            let f = File::open(src.clone());
-            Response::builder()
-                .status(StatusCode::OK)
-                .body(Body::from(format!("file found: {:?}", metadata)))
-                .unwrap()
-        }
+        Ok(metadata) => Response::builder()
+            .status(StatusCode::OK)
+            .body(Body::from(format!("file found: {:?}", metadata)))
+            .unwrap(),
         Err(e) => Response::builder()
             .status(StatusCode::NOT_FOUND)
             .header("content-type", "text/plain")
