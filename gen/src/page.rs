@@ -13,6 +13,26 @@ impl Page {
     pub fn title(&self) -> &str {
         self.front_matter[0]["title"].as_str().unwrap_or("???")
     }
+
+    pub fn from_str(content: &str) -> Page {
+        let empty = vec![Yaml::Null];
+
+        let (front_matter, md) = if content.starts_with("---") {
+            let xs: Vec<&str> = content.split("---").collect();
+            let doc = YamlLoader::load_from_str(xs[1]).unwrap();
+            (doc, xs[2])
+        } else {
+            (empty, content)
+        };
+
+        let parser = Parser::new(md);
+        let mut html_output = String::new();
+        html::push_html(&mut html_output, parser);
+        return Page {
+            front_matter,
+            body_html: html_output,
+        };
+    }
 }
 
 pub fn page(path: &Path) -> Page {
@@ -21,23 +41,13 @@ pub fn page(path: &Path) -> Page {
     let mut content = String::new();
     buf_reader.read_to_string(&mut content).unwrap();
 
-    let empty = vec![Yaml::Null];
+    return Page::from_str(&content);
+}
 
-    let (front_matter, md) = if content.starts_with("---") {
-        let xs: Vec<&str> = content.split("---").collect();
-        let doc = YamlLoader::load_from_str(xs[1]).unwrap();
-        (doc, xs[2])
-    } else {
-        (empty, content.as_str())
-    };
-
-    let parser = Parser::new(md);
-    let mut html_output = String::new();
-    let title = front_matter[0]["title"].as_str().unwrap_or("???");
-    html_output.push_str(format!("<title>{}</title>", title).as_str());
-    html::push_html(&mut html_output, parser);
-    return Page {
-        front_matter,
-        body_html: html_output,
-    };
+#[test]
+fn test_title() {
+    let s = include_str!("testdata/hello.md");
+    let p = Page::from_str(&s);
+    assert_eq!(p.title(), "hello");
+    assert_eq!(p.body_html, "<p>hello world</p>\n");
 }
