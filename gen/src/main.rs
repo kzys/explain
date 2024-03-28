@@ -81,6 +81,8 @@ struct PageData {
     main: minijinja::value::Value,
 }
 
+const UNTITLED: &str = "Untitled";
+
 // basic handler that responds with a static string
 async fn other<'a>(path: Option<Path<String>>, state: State<AppState<'a>>) -> Response<Body> {
     let path = path.unwrap_or(Path("index.html".to_string()));
@@ -91,7 +93,7 @@ async fn other<'a>(path: Option<Path<String>>, state: State<AppState<'a>>) -> Re
         let p = page::page(&src_path);
 
         let pd = PageData {
-            title: p.title().to_string(),
+            title: p.title().unwrap_or(UNTITLED).to_string(),
             main: minijinja::value::Value::from_safe_string(p.body_html.to_string()),
         };
 

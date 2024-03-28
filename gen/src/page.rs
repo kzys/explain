@@ -10,8 +10,8 @@ pub struct Page {
 }
 
 impl Page {
-    pub fn title(&self) -> &str {
-        self.front_matter[0]["title"].as_str().unwrap_or("???")
+    pub fn title(&self) -> Option<&str> {
+        self.front_matter[0]["title"].as_str()
     }
 
     pub fn from_str(content: &str) -> Page {
@@ -45,9 +45,16 @@ pub fn page(path: &Path) -> Page {
 }
 
 #[test]
-fn test_title() {
+fn test_empty() {
+    let p = Page::from_str("");
+    assert_eq!(p.title(), None);
+    assert_eq!(p.body_html, "");
+}
+
+#[test]
+fn test_hello() {
     let s = include_str!("testdata/hello.md");
     let p = Page::from_str(&s);
-    assert_eq!(p.title(), "hello");
+    assert_eq!(p.title(), Some("hello"));
     assert_eq!(p.body_html, "<p>hello world</p>\n");
 }
