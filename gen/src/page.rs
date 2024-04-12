@@ -75,7 +75,7 @@ impl Page {
                 Event::End(TagEnd::Heading(..)) => {
                     heading_level = None;
                 }
-                Event::Text(s) if heading_level != None => {
+                Event::Text(s) if heading_level == Some(HeadingLevel::H1) => {
                     title_from_md = Some(s.to_string());
                 }
                 _ => {}
@@ -118,7 +118,7 @@ fn test_hello() {
 
 #[test]
 fn test_markdown_only() {
-    let p = Page::from_str("# hello");
-    assert_eq!(p.title(), Some("hello"));
-    assert_eq!(p.body_html, "<h1>hello</h1>\n");
+    let p = Page::from_str("# level1\n## level2");
+    assert_eq!(p.title(), Some("level1"));
+    assert_eq!(p.body_html, "<h1>level1</h1>\n<h2>level2</h2>\n");
 }
