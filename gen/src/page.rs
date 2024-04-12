@@ -1,8 +1,41 @@
 use pulldown_cmark::{html, Event, HeadingLevel, Parser, Tag, TagEnd};
+use serde::Serialize;
 use std::fs::File;
 use std::io::{BufReader, Read};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use yaml_rust::{yaml::Yaml, YamlLoader};
+
+use crate::UNTITLED;
+
+#[derive(Serialize, Debug)]
+pub struct Page2 {
+    pub title: String,
+    pub href: String,
+}
+
+impl Page2 {
+    pub fn from_file(path: &str) -> Page2 {
+        let f = File::open(path);
+        let mut buf_reader = BufReader::new(f.unwrap());
+        let mut content = String::new();
+        buf_reader.read_to_string(&mut content).unwrap();
+
+        let p1 = Page::from_str(&content);
+        let mut href = PathBuf::from(path);
+        href.set_extension("html");
+
+        let href = href
+            .to_str()
+            .unwrap()
+            .strip_prefix("src")
+            .unwrap()
+            .to_string();
+        Page2 {
+            href,
+            title: p1.title().unwrap_or("default").to_string(),
+        }
+    }
+}
 
 pub struct Page {
     front_matter: Vec<Yaml>,

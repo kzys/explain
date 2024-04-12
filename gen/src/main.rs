@@ -1,6 +1,6 @@
 use axum::extract::{Path, State};
 use axum::{body::Body, http::StatusCode, response::Response, routing::get, Router};
-use minijinja::Environment;
+use minijinja::{value::Value, Environment};
 use serde::Serialize;
 use std::error::Error;
 use std::result::Result;
@@ -8,6 +8,7 @@ use std::{fs, path};
 use tower_http::trace::TraceLayer;
 use tracing::info;
 
+mod file;
 mod layout;
 mod page;
 
@@ -79,15 +80,61 @@ fn test_find_source() {
 struct PageData {
     title: String,
     main: minijinja::value::Value,
+    files: minijinja::value::Value,
 }
 
 const UNTITLED: &str = "Untitled";
+
+fn files_in_html(node: &file::Node) -> Result<String, Box<dyn Error>> {
+    let mut s = String::new();
+
+    match node {
+        file::Node::Dir { path, children } => {
+            for c in children {
+                match c {
+                    file::Node::Dir { path, children } => {
+                        let href = path.strip_prefix("src")?;
+                        s.push_str(&format!(
+                            "<li><a href={}/>{}</a><ul>",
+                            href.display(),
+                            href.display()
+                        ));
+                        s.push_str(&files_in_html(&c)?);
+                        s.push_str("</ul></li>");
+                    }
+                    file::Node::File { path } => {
+                        if path.to_str().map(|s| s.ends_with("~")).unwrap_or(false) {
+                            continue;
+                        }
+                        let mut href = path.strip_prefix("src")?.to_path_buf();
+                        href.set_extension("html");
+                        s.push_str(&format!(
+                            "<li><a href={}>{}</a></li>",
+                            href.display(),
+                            href.display()
+                        ));
+                    }
+                }
+            }
+        }
+        file::Node::File { path } => {
+            s.push_str(&format!(
+                "<li><a href=\"{}\">{}</a></li>",
+                path.display(),
+                path.file_name().unwrap().to_str().unwrap()
+            ));
+        }
+    }
+
+    Ok(s)
+}
 
 // basic handler that responds with a static string
 async fn other<'a>(path: Option<Path<String>>, state: State<AppState<'a>>) -> Response<Body> {
     let path = path.unwrap_or(Path("index.html".to_string()));
 
     let src_path = find_source(&path);
+    let dir = file::find_files(src_path.parent().unwrap()).unwrap();
 
     if src_path.exists() {
         let p = page::page(&src_path);
@@ -95,6 +142,7 @@ async fn other<'a>(path: Option<Path<String>>, state: State<AppState<'a>>) -> Re
         let pd = PageData {
             title: p.title().unwrap_or(UNTITLED).to_string(),
             main: minijinja::value::Value::from_safe_string(p.body_html.to_string()),
+            files: Value::from_safe_string(files_in_html(&dir).unwrap()),
         };
 
         let t = state.env.get_template("index.html").unwrap();
