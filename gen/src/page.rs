@@ -2,6 +2,7 @@ use pulldown_cmark::{Event, HeadingLevel, Parser, Tag, TagEnd};
 use std::fs::File;
 use std::io::{BufReader, Read};
 use std::path::Path;
+use std::vec;
 use yaml_rust::{yaml::Yaml, YamlLoader};
 
 use crate::html;
@@ -10,7 +11,6 @@ pub struct Page {
     front_matter: Vec<Yaml>,
     title_from_md: Option<String>,
     pub body_html: String,
-    pub toc: String,
 }
 
 impl Page {
@@ -32,27 +32,40 @@ impl Page {
         };
 
         let parser = Parser::new(md);
-        let events: Vec<Event> = parser.collect();
 
         let mut headings: Vec<(HeadingLevel, String)> = Vec::new();
         let mut heading_level: Option<HeadingLevel> = None;
 
-        for ev in events.clone() {
-            match ev {
+        let events: Vec<Event> = parser
+            .flat_map(|ev| match ev {
                 Event::Start(Tag::Heading { level: lv, .. }) => {
                     heading_level = Some(lv);
-                }
-                Event::End(TagEnd::Heading(..)) => {
-                    heading_level = None;
-                }
-                Event::Text(s) => {
-                    if let Some(lv) = heading_level {
-                        headings.push((lv, s.to_string()));
+                    if lv == HeadingLevel::H1 {
+                        None
+                    } else {
+                        Some(ev)
                     }
                 }
-                _ => {}
-            }
-        }
+                Event::End(TagEnd::Heading(lv)) => {
+                    heading_level = None;
+                    if lv == HeadingLevel::H1 {
+                        None
+                    } else {
+                        Some(ev)
+                    }
+                }
+                Event::Text(ref s) => {
+                    if let Some(lv) = heading_level {
+                        headings.push((lv, s.to_string()));
+                        if lv == HeadingLevel::H1 {
+                            return None;
+                        }
+                    }
+                    Some(ev)
+                }
+                _ => Some(ev),
+            })
+            .collect();
 
         let title_from_md = if headings.len() > 0 && headings[0].0 == HeadingLevel::H1 {
             Some(headings[0].1.clone())
@@ -61,13 +74,19 @@ impl Page {
         };
 
         let mut html_output = String::new();
+
+        if let Some(ref title) = title_from_md {
+            html_output.push_str(&format!("<header><h1>{}</h1></header>\n", title));
+        }
+
+        html_output.push_str(&html::toc(&headings));
+
         pulldown_cmark::html::push_html(&mut html_output, events.into_iter());
 
         return Page {
             title_from_md,
             front_matter,
             body_html: html_output,
-            toc: html::toc(&headings),
         };
     }
 
