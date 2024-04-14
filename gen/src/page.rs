@@ -13,6 +13,44 @@ pub struct Page {
     pub body_html: String,
 }
 
+fn filter_events(parser: Parser) -> (Vec<(HeadingLevel, String)>, Vec<Event>) {
+    let mut headings: Vec<(HeadingLevel, String)> = Vec::new();
+    let mut heading_level: Option<HeadingLevel> = None;
+
+    let events: Vec<Event> = parser
+        .flat_map(|ev| match ev {
+            Event::Start(Tag::Heading { level: lv, .. }) => {
+                heading_level = Some(lv);
+                if lv == HeadingLevel::H1 {
+                    None
+                } else {
+                    Some(ev)
+                }
+            }
+            Event::End(TagEnd::Heading(lv)) => {
+                heading_level = None;
+                if lv == HeadingLevel::H1 {
+                    None
+                } else {
+                    Some(ev)
+                }
+            }
+            Event::Text(ref s) => {
+                if let Some(lv) = heading_level {
+                    headings.push((lv, s.to_string()));
+                    if lv == HeadingLevel::H1 {
+                        return None;
+                    }
+                }
+                Some(ev)
+            }
+            _ => Some(ev),
+        })
+        .collect();
+
+    (headings, events)
+}
+
 impl Page {
     pub fn title(&self) -> Option<&str> {
         self.front_matter[0]["title"]
@@ -33,39 +71,7 @@ impl Page {
 
         let parser = Parser::new(md);
 
-        let mut headings: Vec<(HeadingLevel, String)> = Vec::new();
-        let mut heading_level: Option<HeadingLevel> = None;
-
-        let events: Vec<Event> = parser
-            .flat_map(|ev| match ev {
-                Event::Start(Tag::Heading { level: lv, .. }) => {
-                    heading_level = Some(lv);
-                    if lv == HeadingLevel::H1 {
-                        None
-                    } else {
-                        Some(ev)
-                    }
-                }
-                Event::End(TagEnd::Heading(lv)) => {
-                    heading_level = None;
-                    if lv == HeadingLevel::H1 {
-                        None
-                    } else {
-                        Some(ev)
-                    }
-                }
-                Event::Text(ref s) => {
-                    if let Some(lv) = heading_level {
-                        headings.push((lv, s.to_string()));
-                        if lv == HeadingLevel::H1 {
-                            return None;
-                        }
-                    }
-                    Some(ev)
-                }
-                _ => Some(ev),
-            })
-            .collect();
+        let (headings, events) = filter_events(parser);
 
         let title_from_md = if headings.len() > 0 && headings[0].0 == HeadingLevel::H1 {
             Some(headings[0].1.clone())
