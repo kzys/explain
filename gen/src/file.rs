@@ -6,8 +6,7 @@ use std::path;
 
 use crate::page;
 
-#[derive(PartialEq, Eq, PartialOrd, Ord)]
-#[derive(Debug, Serialize)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Serialize)]
 #[serde(untagged)]
 pub enum Node {
     Dir { path: PathBuf, children: Vec<Node> },
@@ -42,8 +41,8 @@ pub fn files_in_html(node: &Node, current: &path::Path) -> Result<String, Box<dy
             let href = path.strip_prefix("src")?;
             let index = path.clone().join("index.md");
             let title = if index.exists() {
-                let page = page::Page2::from_file(index.to_str().unwrap());
-                page.title
+                let page = page::Page::from_file(index.to_str().unwrap());
+                page.title().unwrap_or("default").to_string()
             } else {
                 format!("{}/", href.display())
             };
@@ -67,12 +66,12 @@ pub fn files_in_html(node: &Node, current: &path::Path) -> Result<String, Box<dy
                 return Ok("".to_string());
             }
 
-            let page = page::Page2::from_file(path.to_str().unwrap());
-            let title = page.title.as_str();
+            let page = page::Page::from_file(path.to_str().unwrap());
+            let title = page.title().unwrap_or("default");
 
             let mut href = path.strip_prefix("src")?.to_path_buf();
             href.set_extension("html");
-            let s = format!("<li><a href=/{}>{}</a></li>", href.display(), title,);
+            let s = format!("<li><a href=/{}>{}</a></li>", href.display(), title);
             Ok(s)
         }
     }
@@ -84,7 +83,11 @@ fn test_find_files() -> Result<(), Box<dyn Error>> {
     let root = find_files(&dir)?;
     if let Node::Dir { path: _, children } = root {
         assert_eq!(children.len(), 3);
-        if let Node::Dir { path: p, children: _ } = &children[0] {
+        if let Node::Dir {
+            path: p,
+            children: _,
+        } = &children[0]
+        {
             assert!(p.ends_with("dir1"), "{:?} must end with 'dir1'", p);
         } else {
             unreachable!();
