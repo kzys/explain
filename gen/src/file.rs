@@ -38,20 +38,25 @@ pub fn find_files(dir: &Path) -> Result<Node, Box<dyn Error>> {
 pub fn files_in_html(node: &Node, current: &path::Path) -> Result<String, Box<dyn Error>> {
     match node {
         Node::Dir { path, children } => {
-            let href = path.strip_prefix("src")?;
+            // All HTMLs are in UTF-8, so calling to_string_lossy() here is fine.
+            let mut href = path.strip_prefix("src")?.to_string_lossy().to_string();
+
             let index = path.clone().join("index.md");
             let title = if index.exists() {
                 let page = page::Page::from_file(index.to_str().unwrap());
                 page.title().unwrap_or("default").to_string()
             } else {
-                format!("{}/", href.display())
+                format!("{}/", href)
             };
+
+            href.insert(0, '/');
+            if href != "/" {
+                // Prevent "//".
+                href.push('/');
+            }
+
             let mut s = String::new();
-            s.push_str(&format!(
-                "<li><a href=/{}/>{}</a><ul>",
-                href.display(),
-                title,
-            ));
+            s.push_str(&format!("<li><a href={}>{}</a><ul>", href, title,));
             for c in children {
                 s.push_str(&files_in_html(&c, current)?);
             }
