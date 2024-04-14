@@ -9,6 +9,7 @@ use tower_http::trace::TraceLayer;
 use tracing::info;
 
 mod file;
+mod html;
 mod layout;
 mod page;
 
@@ -79,12 +80,12 @@ fn test_find_source() {
 #[derive(Serialize, Debug)]
 struct PageData {
     title: String,
+    toc: minijinja::value::Value,
     main: minijinja::value::Value,
     files: minijinja::value::Value,
 }
 
 const UNTITLED: &str = "Untitled";
-
 
 // basic handler that responds with a static string
 async fn other<'a>(path: Option<Path<String>>, state: State<AppState<'a>>) -> Response<Body> {
@@ -97,6 +98,7 @@ async fn other<'a>(path: Option<Path<String>>, state: State<AppState<'a>>) -> Re
         let p = page::page(&src_path);
 
         let pd = PageData {
+            toc: Value::from_safe_string(p.toc.clone()),
             title: p.title().unwrap_or(UNTITLED).to_string(),
             main: minijinja::value::Value::from_safe_string(p.body_html.to_string()),
             files: Value::from_safe_string(file::files_in_html(&dir, &src_path).unwrap()),

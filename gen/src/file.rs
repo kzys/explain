@@ -69,16 +69,11 @@ pub fn files_in_html(node: &Node, current: &path::Path) -> Result<String, Box<dy
 
             let mut href = path.strip_prefix("src")?.to_path_buf();
             href.set_extension("html");
-            let s = format!(
-                "<li><a href=/{}>{}</a></li>",
-                href.display(),
-                title,
-            );
+            let s = format!("<li><a href=/{}>{}</a></li>", href.display(), title,);
             Ok(s)
         }
     }
 }
-
 
 #[test]
 fn test_find_files() -> Result<(), Box<dyn Error>> {

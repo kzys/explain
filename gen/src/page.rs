@@ -1,11 +1,11 @@
-use pulldown_cmark::{html, Event, HeadingLevel, Parser, Tag, TagEnd};
+use pulldown_cmark::{Event, HeadingLevel, Parser, Tag, TagEnd};
 use serde::Serialize;
 use std::fs::File;
 use std::io::{BufReader, Read};
 use std::path::{Path, PathBuf};
 use yaml_rust::{yaml::Yaml, YamlLoader};
 
-use crate::UNTITLED;
+use crate::html;
 
 #[derive(Serialize, Debug)]
 pub struct Page2 {
@@ -41,6 +41,7 @@ pub struct Page {
     front_matter: Vec<Yaml>,
     title_from_md: Option<String>,
     pub body_html: String,
+    pub toc: String,
 }
 
 impl Page {
@@ -64,8 +65,8 @@ impl Page {
         let parser = Parser::new(md);
         let events: Vec<Event> = parser.collect();
 
+        let mut headings: Vec<(HeadingLevel, String)> = Vec::new();
         let mut heading_level: Option<HeadingLevel> = None;
-        let mut title_from_md: Option<String> = None;
 
         for ev in events.clone() {
             match ev {
@@ -75,19 +76,29 @@ impl Page {
                 Event::End(TagEnd::Heading(..)) => {
                     heading_level = None;
                 }
-                Event::Text(s) if heading_level == Some(HeadingLevel::H1) => {
-                    title_from_md = Some(s.to_string());
+                Event::Text(s) => {
+                    if let Some(lv) = heading_level {
+                        headings.push((lv, s.to_string()));
+                    }
                 }
                 _ => {}
             }
         }
 
+        let title_from_md = if headings.len() > 0 && headings[0].0 == HeadingLevel::H1 {
+            Some(headings[0].1.clone())
+        } else {
+            None
+        };
+
         let mut html_output = String::new();
-        html::push_html(&mut html_output, events.into_iter());
+        pulldown_cmark::html::push_html(&mut html_output, events.into_iter());
+
         return Page {
             title_from_md,
             front_matter,
             body_html: html_output,
+            toc: html::toc(&headings),
         };
     }
 }
