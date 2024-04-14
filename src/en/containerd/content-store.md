@@ -1,0 +1,1 @@
+# containerd's content store
