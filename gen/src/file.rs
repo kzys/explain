@@ -6,6 +6,7 @@ use std::path;
 
 use crate::page;
 
+#[derive(PartialEq, Eq, PartialOrd, Ord)]
 #[derive(Debug, Serialize)]
 #[serde(untagged)]
 pub enum Node {
@@ -26,6 +27,8 @@ pub fn find_files(dir: &Path) -> Result<Node, Box<dyn Error>> {
             children.push(Node::File { path: entry.path() });
         }
     }
+
+    children.sort();
 
     Ok(Node::Dir {
         path: dir.to_path_buf(),
@@ -81,6 +84,11 @@ fn test_find_files() -> Result<(), Box<dyn Error>> {
     let root = find_files(&dir)?;
     if let Node::Dir { path: _, children } = root {
         assert_eq!(children.len(), 3);
+        if let Node::Dir { path: p, children: _ } = &children[0] {
+            assert!(p.ends_with("dir1"), "{:?} must end with 'dir1'", p);
+        } else {
+            unreachable!();
+        }
     }
     Ok(())
 }
