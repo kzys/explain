@@ -18,6 +18,7 @@
       div.files {
         border: 1px solid #000;
         padding: 1rem;
+        margin-left: 20rem;
       }
       div.files ul, div.files li {
         list-style: none;
@@ -27,14 +28,33 @@
       div.files ul {
         margin-left: 1rem;
       }
+
+      ul.toc {
+        font-size: 90%;
+        width: 15rem;
+        background: #f0f0f0;
+        border: 1px solid #000;
+        margin: 0 1rem;
+        float: left;
+      }
+
+      div.files {
+        font-size: 90%;
+      }
+
+      main {
+        margin-left: 20rem;
+      }
     </style>
     <title>{{ title }}</title>
   </head>
   <body>
-    <div class="toc">{{ toc }}</div>
-    <main>
-      {{ main }}
-    </main>
+    <div class="column">
+      {{ toc }}
+      <main>
+        {{ main }}
+      </main>
+    </div>
     <div class="files">{{ files }}</div>
   </body>
 </html>

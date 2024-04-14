@@ -3,9 +3,7 @@ use pulldown_cmark::HeadingLevel;
 pub fn toc(headings: &Vec<(HeadingLevel, String)>) -> String {
     let mut html_output = String::new();
 
-    html_output.push_str("<ul class=toc>\n");
-
-    let mut close: Vec<String> = vec!["ul".to_string()];
+    let mut close: Vec<String> = vec![];
 
     let from = if headings.len() > 0 && headings[0].0 == HeadingLevel::H1 {
         1
@@ -27,5 +25,14 @@ pub fn toc(headings: &Vec<(HeadingLevel, String)>) -> String {
         html_output.push_str(&format!("</{}>\n", tag));
     }
 
-    html_output
+    if html_output == "" {
+        "".to_string()
+    } else {
+        format!("<ul class=toc>{}</ul>", html_output).to_string()
+    }
+}
+
+#[test]
+fn test_toc() {
+    assert_eq!(toc(&vec![]), "");
 }
