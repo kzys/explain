@@ -15,8 +15,7 @@ impl HTMLBuf {
 
     fn open(&mut self, name: &str) {
         self.nodes
-            .push("  ".to_string().repeat(self.to_close.len()));
-        self.nodes.push(format!("<{}>\n", name));
+            .push(format!("{}<{}>\n", "  ".repeat(self.to_close.len()), name));
         self.to_close.push(name.to_string());
     }
 
@@ -28,7 +27,8 @@ impl HTMLBuf {
 
     fn close(&mut self) {
         let name = self.to_close.pop().unwrap();
-        self.nodes.push(format!("</{}>", name));
+        self.nodes
+            .push(format!("{}</{}>\n", "  ".repeat(self.to_close.len()), name));
     }
 
     fn to_string(&self) -> String {
@@ -51,8 +51,13 @@ pub fn toc(headings: &Vec<(HeadingLevel, String)>) -> String {
 
     let mut current_level = HeadingLevel::H2;
     for (lv, s) in headings.iter().skip(from) {
-        if *lv != current_level {
+        if *lv > current_level {
             hb.open("ul");
+            current_level = *lv;
+        } else if *lv < current_level {
+            hb.close(); // close li
+            hb.close(); // close ul
+            hb.close(); // close li
             current_level = *lv;
         }
         hb.open("li");
@@ -64,26 +69,34 @@ pub fn toc(headings: &Vec<(HeadingLevel, String)>) -> String {
     if html == "" {
         "".to_string()
     } else {
-        format!("<ul class=toc>{}</ul>", html).to_string()
+        format!("<ul class=toc>\n{}</ul>", html).to_string()
     }
 }
+
+#[cfg(test)]
+use pretty_assertions::assert_eq;
 
 #[test]
 fn test_toc() {
     assert_eq!(toc(&vec![]), "");
     assert_eq!(
         toc(&vec![
-            (HeadingLevel::H1, "H1".to_string()),
-            (HeadingLevel::H2, "H2".to_string()),
-            (HeadingLevel::H3, "H3".to_string()),
+            (HeadingLevel::H1, "foo".to_string()),
+            (HeadingLevel::H2, "bar".to_string()),
+            (HeadingLevel::H3, "baz".to_string()),
+            (HeadingLevel::H2, "quux".to_string()),
         ]),
-        r#"<ul class=toc><li>
-  H2
+        r#"<ul class=toc>
+<li>
+  bar
   <ul>
     <li>
-      H3
+      baz
     </li>
   </ul>
+</li>
+<li>
+  quux
 </li>
 </ul>"#
     );

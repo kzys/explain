@@ -5,6 +5,9 @@ use std::path::Path;
 use std::vec;
 use yaml_rust::{yaml::Yaml, YamlLoader};
 
+#[cfg(test)]
+use pretty_assertions::assert_eq;
+
 use crate::html;
 
 pub struct Page {
@@ -137,7 +140,8 @@ fn test_markdown_only() {
     assert_eq!(
         p.body_html,
         r#"<header><h1>level1</h1></header>
-<ul class=toc><li>
+<ul class=toc>
+<li>
   level2
 </li>
 </ul><h2>level2</h2>
