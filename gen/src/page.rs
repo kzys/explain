@@ -134,5 +134,13 @@ fn test_hello() {
 fn test_markdown_only() {
     let p = Page::from_str("# level1\n## level2");
     assert_eq!(p.title(), Some("level1"));
-    assert_eq!(p.body_html, "<header><h1>level1</h1></header>\n<ul class=toc><li>level2\n</li>\n</ul><h2>level2</h2>\n");
+    assert_eq!(
+        p.body_html,
+        r#"<header><h1>level1</h1></header>
+<ul class=toc><li>
+  level2
+</li>
+</ul><h2>level2</h2>
+"#
+    );
 }
