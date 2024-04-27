@@ -1,4 +1,5 @@
 use minijinja::Environment;
+use minijinja_autoreload::EnvironmentGuard;
 use std::error::Error;
 use std::fs::File;
 use std::io::{BufReader, Read};

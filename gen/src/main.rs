@@ -5,6 +5,7 @@ use serde::Serialize;
 use std::error::Error;
 use std::result::Result;
 use std::{fs, path};
+use std::sync::Arc;
 use tower_http::trace::TraceLayer;
 use tracing::info;
 
@@ -13,9 +14,8 @@ mod html;
 mod layout;
 mod page;
 
-#[derive(Clone)]
-struct AppState<'a> {
-    env: Environment<'a>,
+struct AppState {
+    reloader: minijinja_autoreload::AutoReloader,
 }
 
 #[tokio::main]
@@ -25,8 +25,16 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .with_max_level(tracing::Level::DEBUG)
         .init();
 
-    let mut env = Environment::new();
-    layout::register_template(&mut env, "index.html", "layout/index.html")?;
+    let reloader = minijinja_autoreload::AutoReloader::new(|notifier| {
+        let mut env = Environment::new();
+        notifier.watch_path("layout", true);
+        layout::register_template(&mut env, "index.html", "layout/index.html").unwrap();
+        Ok(env)
+    });
+
+    {
+        let mut env: minijinja_autoreload::EnvironmentGuard<'_> = reloader.acquire_env()?;
+    }
 
     // build our application with a route
     let app = Router::new()
@@ -40,7 +48,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             }),
         )
         .layer(TraceLayer::new_for_http())
-        .with_state(AppState { env });
+        .with_state(Arc::new(AppState { reloader }));
 
     let addr = "0.0.0.0:8080";
 
@@ -87,7 +95,7 @@ struct PageData {
 const UNTITLED: &str = "Untitled";
 
 // basic handler that responds with a static string
-async fn other<'a>(path: Option<Path<String>>, state: State<AppState<'a>>) -> Response<Body> {
+async fn other<'a>(path: Option<Path<String>>, state: State<Arc<AppState>>) -> Response<Body> {
     let path = path.unwrap_or(Path("index.html".to_string()));
 
     let src_path = find_source(&path);
@@ -102,7 +110,8 @@ async fn other<'a>(path: Option<Path<String>>, state: State<AppState<'a>>) -> Re
             files: Value::from_safe_string(file::files_in_html(&dir, &src_path).unwrap()),
         };
 
-        let t = state.env.get_template("index.html").unwrap();
+        let env = state.reloader.acquire_env().unwrap();
+        let t = env.get_template("index.html").unwrap();
         let s = t.render(&pd).unwrap();
 
         return Response::builder()
