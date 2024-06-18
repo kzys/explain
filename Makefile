@@ -13,3 +13,7 @@ fmt:
 
 test:
 	cd gen && cargo tarpaulin --skip-clean --target-dir tmp/tarpaulin
+
+docker:
+	docker build . -t explain:latest
+	docker run explain:latest

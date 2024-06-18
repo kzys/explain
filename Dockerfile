@@ -1,11 +1,5 @@
-FROM rust:1.73.0 as builder
+FROM oven/bun:1.1-slim
 WORKDIR /app
-COPY gen /app/gen
-RUN cd /app/gen && cargo build
-
-FROM ubuntu:latest
-WORKDIR /app
-COPY --from=builder /app/gen/target/debug/gen /app/gen
-COPY src /app/src
-COPY layout /app/layout
-ENTRYPOINT [ "/app/gen" ]
+COPY . /app
+RUN bun install --production
+ENTRYPOINT [ "bun", "run", "server.ts" ]
