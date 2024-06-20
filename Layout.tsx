@@ -1,12 +1,15 @@
 import React from 'react';
 
-export function Component({title, children}) {
+export default function Layout({
+    title, children, machine, region, edge, bunVersion
+}) {
     let style = `
     body {
         padding: 1rem;
         background: #eee;
         color: #000;
         font-family: sans-serif;
+        line-height: 1.5;
     }
 
     a {
@@ -42,6 +45,9 @@ export function Component({title, children}) {
         main {
             display: flex;
         }
+        .column {
+            width: 50%;
+        }
         .column + .column {
             margin-left: 1rem;
             padding-left: 1rem;
@@ -50,7 +56,9 @@ export function Component({title, children}) {
     }
 
     footer {
+        margin-top: 1rem;
         padding-top: 1rem;
+        border-top: 1px solid #000;
         font-size: 90%;
     }
     `
@@ -58,9 +66,22 @@ export function Component({title, children}) {
         <html>
             <head>
                 <style>{style}</style>
-                <title>{title}</title>
+                <title>{
+                    title ? `${title} - explain.8-p.info` : 'explain.8-p.info'
+                }</title>
             </head>
             <body>{children}</body>
+            <footer>
+            Powered by Bun v{bunVersion}&nbsp;
+            {
+            (machine && region && edge) &&
+                <span>
+                    and Fly.io.
+                    Your request is accepted by {edge} and
+                    forwaded to {machine} in {region}.
+                </span>
+            }
+            </footer>
         </html>
     )
 }
