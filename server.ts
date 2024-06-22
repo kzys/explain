@@ -1,12 +1,16 @@
 import * as fs from 'node:fs/promises';
-import * as marked from 'marked';
 import Layout from './Layout.tsx';
 import * as dom from 'react-dom/server'
-import {micromark} from 'micromark'
-import {gfm, gfmHtml} from 'micromark-extension-gfm'
 import Index from './Index.tsx'
 import react from 'react'
 import yaml from 'yaml'
+import rehypeStringify from 'rehype-stringify'
+import remarkParse from 'remark-parse'
+import remarkFrontmatter from 'remark-frontmatter'
+import remarkGfm from 'remark-gfm'
+import remarkRehype from 'remark-rehype'
+import {unified} from 'unified'
+import {remarkSidenote} from './sidenote'
 
 class Page {
     fm: yaml.Document
@@ -31,12 +35,14 @@ class Page {
         return new Page(fm, source);
     }
 
-    createComponent() {
-        let html = micromark(this.source, {
-            allowDangerousHtml: true,
-            extensions: [gfm()],
-            htmlExtensions: [gfmHtml()]
-        })
+    async createComponent() {
+        let parser = unified().use(remarkParse as any).use(remarkFrontmatter)
+            .use(remarkGfm)
+            .use(remarkSidenote)
+            .use(remarkRehype, {allowDangerousHtml: true})
+            .use(rehypeStringify, {allowDangerousHtml: true});
+        let file = await parser.process(this.source);
+        let html = String(file);
     
         return react.createElement('div', {dangerouslySetInnerHTML: {__html: html}});    
     }

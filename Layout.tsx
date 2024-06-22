@@ -61,6 +61,15 @@ export default function Layout({
         border-top: 1px solid #000;
         font-size: 90%;
     }
+
+    main {
+        margin-right: 20rem;
+    }
+
+    aside {
+        border: 1px solid #000;
+        margin-top: -1.5rem;
+    }
     `
     return (
         <html>
@@ -70,7 +79,9 @@ export default function Layout({
                     title ? `${title} - explain.8-p.info` : 'explain.8-p.info'
                 }</title>
             </head>
-            <body>{children}</body>
+            <body>
+                <main>{children}</main>
+            </body>
             <footer>
             Powered by Bun v{bunVersion}&nbsp;
             {
