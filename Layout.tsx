@@ -6,7 +6,7 @@ export default function Layout({
     let style = `
     body {
         padding: 1rem;
-        background: #eee;
+        background: #fff;
         color: #000;
         font-family: sans-serif;
         line-height: 1.5;
@@ -37,21 +37,27 @@ export default function Layout({
     }
 
 
-    .column {
-        flex-grow: 1;
+    small.sidenote {
+        display: block;
+        margin: 1rem;
     }
 
-    @media (min-width: 50rem) {
+    main {
+      max-width: 60rem;
+    }
+
+    @media (min-width: 60rem) {
         main {
-            display: flex;
+            margin-right: 20rem;
         }
-        .column {
-            width: 50%;
-        }
-        .column + .column {
-            margin-left: 1rem;
-            padding-left: 1rem;
-            border-left: 1px solid #000;
+
+        small.sidenote {
+            display: inline;
+            float: right;
+            font-size: 90%;
+            margin: 0 -20rem 0 0;
+            position: relative;
+            width: 20rem;
         }
     }
 
@@ -62,14 +68,6 @@ export default function Layout({
         font-size: 90%;
     }
 
-    main {
-        margin-right: 20rem;
-    }
-
-    aside {
-        border: 1px solid #000;
-        margin-top: -1.5rem;
-    }
     `
     return (
         <html>
