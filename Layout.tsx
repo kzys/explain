@@ -1,74 +1,11 @@
-import React from 'react';
+import React from 'react'
+import fs from 'fs'
 
 export default function Layout({
     title, children, machine, region, edge, bunVersion
 }) {
-    let style = `
-    body {
-        padding: 1rem;
-        background: #fff;
-        color: #000;
-        font-family: sans-serif;
-        line-height: 1.5;
-    }
+    let style = fs.readFileSync('src/layout.css')
 
-    a {
-        color: #30f;
-    }
-
-    a:visited {
-        color: #90f;
-    }
-
-    h1 {
-        font-size: 2rem;
-        font-weight: normal;
-    }
-
-    h2 {
-        display: flex;
-        align-items: baseline;
-        font-weight: normal;
-        justify-content: space-between;
-    }
-
-    .ja {
-        color: #f90;
-    }
-
-
-    small.sidenote {
-        display: block;
-        margin: 1rem;
-    }
-
-    main {
-      max-width: 60rem;
-    }
-
-    @media (min-width: 60rem) {
-        main {
-            margin-right: 20rem;
-        }
-
-        small.sidenote {
-            display: inline;
-            float: right;
-            font-size: 90%;
-            margin: 0 -20rem 0 0;
-            position: relative;
-            width: 20rem;
-        }
-    }
-
-    footer {
-        margin-top: 1rem;
-        padding-top: 1rem;
-        border-top: 1px solid #000;
-        font-size: 90%;
-    }
-
-    `
     return (
         <html>
             <head>
