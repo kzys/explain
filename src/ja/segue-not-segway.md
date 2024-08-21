@@ -9,4 +9,4 @@ title: segue であって segway ではない
 
 > The word you want to use in such cases is segue.
 
-とはっきり書かれている一方で、StackExchange には [Has "segway" become an acceptable substitute for "segue"?](https://english.stackexchange.com/questions/22012/has-segway-become-an-acceptable-substitute-for-segue) (2011) という質問もある。
+とはっきり書かれている一方で、StackExchange には [Has "segway" become an acceptable substitute for "segue"?](https://english.stackexchange.com/questions/22012/has-segway-become-an-acceptable-substitute-for-segue) (2011) という質問もあるので、segway だと思っている人は私だけではないらしい。
