@@ -18,9 +18,6 @@ export default async function PageList({pattern}) {
     let links: React.Component[] = []
     let glob = new Glob(pattern)
     for await (let file of glob.scan()) {
-        if (file.endsWith('index.md')) {
-            continue;
-        }
         let href = file.replace(/^src\//, '').replace(/\.md$/, '.html');
         
         let [fm, source] = await page(file);
