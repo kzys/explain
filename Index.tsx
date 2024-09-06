@@ -9,7 +9,11 @@ export default function Index() {
             not <a href="https://en.wiktionary.org/wiki/ELI5">like you are five</a> though.
         </p>
         <main>
-            <PageList pattern="src/en/**.md"/>
+            <h2>English</h2>
+            <PageList pattern="src/en/**/*.md"/>
+
+            <h2>日本語</h2>
+            <PageList pattern="src/ja/**/*.md"/>
         </main>
     </>
 }
