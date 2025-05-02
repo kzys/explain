@@ -12,8 +12,10 @@ fmt:
 	cd gen && cargo fmt
 
 test:
-	cd gen && cargo tarpaulin --skip-clean --target-dir tmp/tarpaulin
+	bundle exec ruby test/*.rb
 
 docker:
 	docker build . -t explain:latest
 	docker run explain:latest
+
+.PHONY: test

@@ -1,0 +1,24 @@
+require 'minitest/autorun'
+require_relative '../gen'
+
+class TestGen < Minitest::Test
+  def test_front_matter
+    g = Gen.new
+    vm = g.parse_file('test/front_matter.md')
+    assert_equal('from front matter', vm.title)
+    assert_match(/hello world/, vm.content)
+  end
+
+  def test_markdown
+    g = Gen.new
+    vm = g.parse_file('test/markdown.md')
+    assert_equal('h1', vm.title)
+    assert_equal(<<END, vm.content)
+<h1>h1</h1>
+<p>foo</p>
+<hr />
+<p>bar</p>
+END
+
+  end
+end
