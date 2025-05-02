@@ -20,16 +20,20 @@ Find.find('src') do |path|
 
   if path.extname == '.md'
     File.open(html_path.to_s.gsub(/\.md$/, '.html'), 'w') do |f|
-      doc = Markly.parse(File.read(path))
-      title = nil
-      doc.walk do |node|
-        if node.type == :header and node.header_level == 1
-          title = node.first_child.string_content
+      begin
+        doc = Markly.parse(File.read(path))
+        title = nil
+        doc.walk do |node|
+          if node.type == :header and node.header_level == 1
+            title = node.first_child.string_content
+          end
         end
+        content = doc.to_html
+        h = layout.result(binding)
+        f.write(h)
+      rescue => e
+        STDERR.puts("failed to process #{f}: #{e}")
       end
-      content = doc.to_html
-      h = layout.result(binding)
-      f.write(h)
     end
   else
     File.open(html_path, 'w') do |f|
