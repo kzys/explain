@@ -4,7 +4,7 @@ require 'pathname'
 require 'erb'
 
 src_dir = Pathname('src')
-build_dir = Pathname('build')
+public_dir = Pathname('public')
 
 layout = ERB.new(src_dir.join('layout.html.erb').read)
 
@@ -13,7 +13,7 @@ Find.find('src') do |path|
   next if path =~ /~$/
 
   path = Pathname(path)
-  html_path = build_dir + path.relative_path_from(src_dir)
+  html_path = public_dir + path.relative_path_from(src_dir)
 
   d = html_path.dirname
   d.mkpath unless d.exist?
