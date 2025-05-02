@@ -1,13 +1,7 @@
 require 'find'
-require 'redcarpet'
+require 'markly'
 require 'pathname'
 require 'erb'
-
-class Renderer < Redcarpet::Render::HTML
-end
-
-markdown = Redcarpet::Markdown.new(Renderer.new, extensions = {})
-
 
 src_dir = Pathname('src')
 build_dir = Pathname('build')
@@ -26,9 +20,14 @@ Find.find('src') do |path|
 
   if path.extname == '.md'
     File.open(html_path.to_s.gsub(/\.md$/, '.html'), 'w') do |f|
-      content = markdown.render(File.read(path))
-      title = ""
-
+      doc = Markly.parse(File.read(path))
+      title = nil
+      doc.walk do |node|
+        if node.type == :header and node.header_level == 1
+          title = node.first_child.string_content
+        end
+      end
+      content = doc.to_html
       h = layout.result(binding)
       f.write(h)
     end

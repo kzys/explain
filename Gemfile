@@ -1,3 +1,3 @@
 source 'https://rubygems.org'
 
-gem 'redcarpet', '3.6.0'
+gem 'markly', '0.9.1'
