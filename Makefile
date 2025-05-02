@@ -1,5 +1,5 @@
 build:
-	cd gen && cargo build
+	bundle exec ruby gen.rb
 
 deploy:
 	fly deploy
