@@ -46,7 +46,7 @@ XG は韓国を拠点に活動する日本人ガールズグループ。K-POP �
 村上龍の『限りなく透明に近いブルー』はすごいけど良いという感じではなく、
 奥田英朗『イン・ザ・プール』は、後半につれて勧善懲悪によっていくのが好みではなかった。
 
---
+---
 
 この記事は、[2024 Advent Calendar 2024](https://adventar.org/calendars/10478)の、[11日目](https://www.worldtimebuddy.com/?qm=1&lid=1850147,5809844&h=5809844&date=2024-12-11&sln=0-7&hf=1)でした。
 昨日は[nagataさん](https://scrapbox.io/nagata/%E3%83%99%E3%82%B9%E3%83%88%E3%82%AA%E3%83%962024)、明日はshikakunさんです。
