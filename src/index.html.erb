@@ -10,38 +10,17 @@
             <div class="ja">説明</div>
         </header>
         <main id="index">
-            <div class="column">
-                <h1>
-                    <div>Japanese</div>
-                    <div class="ja">日本語</div>
-                </h1>
-                <h2>著者について</h2>
-                <p>
-                    日本生まれ、シアトル在住のプログラマです。
-                    いまは <a href="https://fly.io/">Fly.io</a> というスタートアップで働いています。
-                </p>
-		<ul>
-                  <% Page.find('src/ja/*.md').each do |page| %>
-		  <li><a href="<%= page.url %>"><%= page.title %></a></li>
-		  <% end %>
-		</ul>
-            </div>
-            <div class="column">
-                <h1>
-                    <div>English</div>
-                    <div class="ja">英語</div>
-                </h1>
-                <h2>About the author</h2>
-                <p>
-                    A Japanese software developer in Seattle.
-                    I'm currently working for a startup called <a href="https://fly.io/">Fly.io</a>.
-                </p>
-		<ul>
-                  <% Page.find('src/en/*.md').each do |page| %>
-		  <li><a href="<%= page.url %>"><%= page.title %></a></li>
-		  <% end %>
-		</ul>
-            </div>
+	  <ul class="pages">
+            <% Page.find('src/*/*.md').each do |page| %>
+	    <li>
+	      <a href="<%= page.url %>"><%= page.title %></a>
+	      <div class="meta">
+		<span>Edited at <%= page.mtime&.strftime('%Y-%m-%d') %></span>
+		<span><%= if page.url =~ %r{^ja/} then '日本語' else 'English' end %></span>
+	      </div>
+	    </li>
+	  <% end %>
+	  </table>
         </main>
     </body>
 </html>

@@ -24,13 +24,28 @@ h1 .ja {
     font-weight: normal;
 }
 
-main#index {
+main {
+    max-width: 50rem;
+    margin: 0 auto;
+}
+
+.meta {
+    font-size: 80%;
+    color: #333;
     display: flex;
+    justify-content: space-between;
 }
-div.column {
-    width: 50%;
+
+.meta span {
+    margin-right: 1rem;
 }
-div.column + div.column {
-    border-left: 1px solid #000;
-    padding-left: 1em;
+
+ul.pages {
+    list-style: none;
+    padding: 0;
 }
+
+ul.pages li {
+    padding: 1rem 0;
+}
+    
