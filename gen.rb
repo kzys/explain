@@ -3,6 +3,8 @@ require 'markly'
 require 'pathname'
 require 'erb'
 require 'yaml'
+require 'open3'
+require 'time'
 
 class Page
   def initialize
@@ -10,29 +12,47 @@ class Page
     @content = nil
     @url = nil
     @draft = false
+    @ctime = nil
+    @mtime = nil
   end
 
   attr_accessor :title
   attr_accessor :content
   attr_accessor :url
   attr_accessor :draft
+  attr_accessor :ctime, :mtime
     
   
   def self.find(pattern)
     g = Gen.new
-    Dir.glob(pattern).sort.map do |path|
+    Dir.glob(pattern).map do |path|
       g.parse_file(path)
-    rescue => e
-      STDERR.puts("failed to process #{path}: #{e}")
     end.delete_if do |page|
       page and page.draft
-    end
+    end.sort_by {|p| p.ctime.to_s }.reverse
   end
 end
 
 class Gen
   def initialize
     @src_dir = Pathname('src')
+    @file_to_time = parse_git_log
+  end
+
+  def parse_git_log
+    ret = {}
+    
+    stdin, stdout, stderr, wait_thr = Open3.popen3('git', 'log', '--name-only', "--format=format:\t%aI")
+    stdin.close
+    stdout.read.split(/\t/).each do |commit|
+      xs = commit.split(/\n/)
+      date = xs.shift
+      xs.each do |path|
+        ret[path] = (ret[path] || []) + [Time.parse(date)]
+      end
+    end
+
+    ret
   end
   
   def parse_file(path)
@@ -64,6 +84,11 @@ class Gen
     url = Pathname(path).relative_path_from(@src_dir).to_s
     url.gsub!(/\.md$/, '.html')
     result.url = url
+
+    if times = @file_to_time[path]
+      result.ctime = times[-1]
+      result.mtime = times[0]
+    end
 
     result
   end
