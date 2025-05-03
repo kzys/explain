@@ -92,6 +92,10 @@ class Gen
 
     result
   end
+
+  def include(path)
+    ERB.new(Pathname('view').join(path).read).result(binding)
+  end
   
   def run
     src_dir = Pathname('src')
