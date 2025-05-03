@@ -20,6 +20,11 @@
                     日本生まれ、シアトル在住のプログラマです。
                     いまは <a href="https://fly.io/">Fly.io</a> というスタートアップで働いています。
                 </p>
+		<ul>
+                  <% Page.find('src/ja/*.md').each do |page| %>
+		  <li><a href="<%= page.url %>"><%= page.title %></a></li>
+		  <% end %>
+		</ul>
             </div>
             <div class="column">
                 <h1>
@@ -31,6 +36,11 @@
                     A Japanese software developer in Seattle.
                     I'm currently working for a startup called <a href="https://fly.io/">Fly.io</a>.
                 </p>
+		<ul>
+                  <% Page.find('src/en/*.md').each do |page| %>
+		  <li><a href="<%= page.url %>"><%= page.title %></a></li>
+		  <% end %>
+		</ul>
             </div>
         </main>
     </body>

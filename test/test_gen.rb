@@ -7,6 +7,7 @@ class TestGen < Minitest::Test
     vm = g.parse_file('test/front_matter.md')
     assert_equal('from front matter', vm.title)
     assert_match(/hello world/, vm.content)
+    assert_equal(true, vm.draft)
   end
 
   def test_markdown

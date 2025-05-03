@@ -4,11 +4,39 @@ require 'pathname'
 require 'erb'
 require 'yaml'
 
-ViewModel = Struct.new(:title, :content)
+class Page
+  def initialize
+    @title = nil
+    @content = nil
+    @url = nil
+    @draft = false
+  end
+
+  attr_accessor :title
+  attr_accessor :content
+  attr_accessor :url
+  attr_accessor :draft
+    
+  
+  def self.find(pattern)
+    g = Gen.new
+    Dir.glob(pattern).sort.map do |path|
+      g.parse_file(path)
+    rescue => e
+      STDERR.puts("failed to process #{path}: #{e}")
+    end.delete_if do |page|
+      page and page.draft
+    end
+  end
+end
 
 class Gen
+  def initialize
+    @src_dir = Pathname('src')
+  end
+  
   def parse_file(path)
-    result = ViewModel.new
+    result = Page.new
 
     md = nil
     raw = File.read(path)
@@ -16,6 +44,7 @@ class Gen
       docs = raw.split(/^---$/, 3)
       front_matter = YAML.load(docs[1])
       result.title = front_matter['title']
+      result.draft = front_matter['draft']
       md = docs[2]
     else
       md = raw
@@ -32,6 +61,10 @@ class Gen
 
     result.content = doc.to_html
 
+    url = Pathname(path).relative_path_from(@src_dir).to_s
+    url.gsub!(/\.md$/, '.html')
+    result.url = url
+
     result
   end
   
@@ -39,7 +72,7 @@ class Gen
     src_dir = Pathname('src')
     public_dir = Pathname('public')
 
-    layout = ERB.new(src_dir.join('layout.html.erb').read)
+    layout = ERB.new(Pathname('view').join('layout.html.erb').read)
 
     Find.find('src') do |path|
       next if File.directory?(path)
@@ -51,7 +84,8 @@ class Gen
       d = html_path.dirname
       d.mkpath unless d.exist?
 
-      if path.extname == '.md'
+      case path.extname
+      when '.md'
         File.open(html_path.to_s.gsub(/\.md$/, '.html'), 'w') do |f|
           begin
             page = self.parse_file(path)
@@ -60,6 +94,12 @@ class Gen
           rescue => e
             STDERR.puts("failed to process #{f}: #{e}")
           end
+        end
+      when '.erb'
+        dest = public_dir + path.relative_path_from(src_dir)
+
+        File.open(dest.to_s.gsub(/\.erb$/, ''), 'w') do |f|
+          f.write(ERB.new(path.read).result(binding))
         end
       else
         File.open(html_path, 'w') do |f|
