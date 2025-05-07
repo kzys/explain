@@ -11,7 +11,7 @@
         </header>
         <main id="index">
 	  <ul class="pages">
-            <% Page.find('src/*/*.md').each do |page| %>
+            <% self.find('src/*/*.md').each do |page| %>
 	    <li>
 	      <a href="<%= page.url %>"><%= page.title %></a>
 	      <div class="meta">
