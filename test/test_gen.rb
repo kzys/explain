@@ -26,4 +26,11 @@ class TestGen < Minitest::Test
 END
 
   end
+
+  def test_parse_git_log
+    g = Gen.new
+    log = File.read('testdata/git_log.txt')
+    file_to_time = g.parse_git_log(log)
+    assert(file_to_time)
+  end
 end

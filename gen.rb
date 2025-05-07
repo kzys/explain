@@ -36,15 +36,16 @@ end
 class Gen
   def initialize
     @src_dir = Pathname('src')
-    @file_to_time = parse_git_log
-  end
 
-  def parse_git_log
-    ret = {}
-    
     stdin, stdout, stderr, wait_thr = Open3.popen3('git', 'log', '--name-only', "--format=format:\t%aI")
     stdin.close
-    stdout.read.split(/\t/).each do |commit|
+    @file_to_time = parse_git_log(stdout.read)
+  end
+
+  def parse_git_log(out)
+    ret = {}
+
+    out.split(/\t/).each do |commit|
       xs = commit.split(/\n/)
       date = xs.shift
       xs.each do |path|
