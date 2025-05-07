@@ -1,3 +1,7 @@
+require 'simplecov'
+SimpleCov.minimum_coverage 70
+SimpleCov.start
+
 require 'minitest/autorun'
 require_relative '../gen'
 
