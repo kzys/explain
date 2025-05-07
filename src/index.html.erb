@@ -5,10 +5,7 @@
         <title>explain / 説明</title>
     </head>
     <body>
-        <header>
-            <div>explain</div>
-            <div class="ja">説明</div>
-        </header>
+      <%= include 'header.html.erb' %>
         <main id="index">
 	  <ul class="pages">
             <% Page.find('src/*/*.md').each do |page| %>

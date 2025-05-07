@@ -5,12 +5,7 @@
         <title><%= page.title %></title>
     </head>
     <body>
-        <header>
-            <div>Explain</div>
-            <div class="ja">説明</div>
-        </header>
-        <main>
-        <%= page.content %>
-        </main>
+      <%= include 'header.html.erb' %>
+      <main><%= page.content %></main>
     </body>
 </html>
