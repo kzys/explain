@@ -115,6 +115,7 @@ class Gen
         end
       when '.erb'
         dest = @dest_dir + path.relative_path_from(@src_dir)
+        site_url = 'https://explain.8-p.info'
 
         File.open(dest.to_s.gsub(/\.erb$/, ''), 'w') do |f|
           f.write(ERB.new(path.read).result(binding))
