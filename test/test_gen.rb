@@ -30,6 +30,31 @@ END
 
   end
 
+  def test_h1_title_extraction
+    vm = @gen.parse_file('test/h1_title.md')
+    assert_equal('My H1 Title', vm.title)
+    assert_match(%r{<h1>My H1 Title</h1>}, vm.content)
+    assert_equal(false, vm.draft)
+  end
+
+  def test_no_title
+    vm = @gen.parse_file('test/no_title.md')
+    assert_nil(vm.title)
+    assert_match(/This is a markdown file/, vm.content)
+    assert_equal(false, vm.draft)
+  end
+
+  def test_url_generation
+    vm = @gen.parse_file('test/markdown.md')
+    assert_equal('../../test/markdown.html', vm.url)
+  end
+
+  def test_timestamps
+    vm = @gen.parse_file('test/markdown.md')
+    assert_instance_of(Time, vm.ctime)
+    assert_instance_of(Time, vm.mtime)
+  end
+
   def test_parse_git_log
     log = File.read('testdata/git_log.txt')
     file_to_time = @gen.parse_git_log(log)

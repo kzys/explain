@@ -82,6 +82,9 @@ class Gen
     if times = @file_to_time[path]
       result.ctime = times[-1]
       result.mtime = times[0]
+    else
+      result.ctime = File.ctime(path)
+      result.mtime = File.mtime(path)
     end
 
     result
