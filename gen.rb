@@ -5,6 +5,7 @@ require 'erb'
 require 'yaml'
 require 'open3'
 require 'time'
+require 'yaml'
 
 class Page
   def initialize
@@ -24,9 +25,10 @@ class Page
 end
 
 class Gen
-  def initialize(src_dir, dest_dir)
+  def initialize(src_dir, dest_dir, config = {})
     @src_dir = Pathname(src_dir)
     @dest_dir = Pathname(dest_dir)
+    @config = config
 
     stdin, stdout, stderr, wait_thr = Open3.popen3('git', 'log', '--name-only', "--format=format:\t%aI")
     stdin.close
@@ -115,8 +117,6 @@ class Gen
         end
       when '.erb'
         dest = @dest_dir + path.relative_path_from(@src_dir)
-        site_url = 'https://explain.8-p.info'
-
         File.open(dest.to_s.gsub(/\.erb$/, ''), 'w') do |f|
           f.write(ERB.new(path.read).result(binding))
         end
@@ -137,4 +137,5 @@ class Gen
   end
 end
 
-Gen.new('src', 'public').run if __FILE__ == $0
+config = YAML.load_file('config.yaml')
+Gen.new('src', 'public', config).run if __FILE__ == $0

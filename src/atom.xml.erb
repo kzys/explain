@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>explain / 説明</title>
-  <link href="<%= site_url %>/atom.xml" rel="self"/>
-  <link href="<%= site_url %>"/>
+  <link href="<%= @config['site_url'] %>/atom.xml" rel="self"/>
+  <link href="<%= @config['site_url'] %>"/>
   <updated><%= Time.now.utc.iso8601 %></updated>
-  <id><%= site_url %>/</id>
+  <id><%= @config['site_url'] %>/</id>
   <author>
     <name>Your Name</name>
   </author>
@@ -12,9 +12,9 @@
   <% self.find('src/*/*.md').sort_by(&:mtime).reverse.take(10).each do |page| %>
   <entry>
     <title><%= page.title %></title>
-    <link href="<%= site_url %>/<%= page.url %>"/>
+    <link href="<%= @config['site_url'] %>/<%= page.url %>"/>
     <updated><%= page.mtime&.utc&.iso8601 %></updated>
-    <id><%= site_url %>/<%= page.url %></id>
+    <id><%= @config['site_url'] %>/<%= page.url %></id>
     <content type="html"><![CDATA[<%= page.content %>]]></content>
   </entry>
   <% end %>
