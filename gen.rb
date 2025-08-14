@@ -48,7 +48,7 @@ class Gen
 
     ret
   end
-  
+
   def parse_file(path)
     result = Page.new
 
@@ -63,7 +63,7 @@ class Gen
     else
       md = raw
     end
-    
+
     doc = Markly.parse(md)
     unless result.title
       doc.walk do |node|
@@ -93,7 +93,7 @@ class Gen
   def include(path)
     ERB.new(Pathname('view').join(path).read).result(binding)
   end
-  
+
   def run
     layout = ERB.new(Pathname('view').join('layout.html.erb').read)
 
