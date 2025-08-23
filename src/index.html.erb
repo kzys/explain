@@ -1,27 +1,40 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="style.css">
-        <link rel="alternate" type="application/atom+xml" href="atom.xml">
-        <title>explain / 説明</title>
-    </head>
-    <body>
-      <%= include 'header.html.erb' %>
-        <main id="index">
-	  <ul class="pages">
-            <% self.find('src/*/*.md').each do |page| %>
-	    <li>
-	      <a href="<%= page.url %>"><%= page.title %></a>
-	      <div class="meta">
-		<span>Edited at <%= page.mtime&.strftime('%Y-%m-%d') %></span>
-		<span><%= if page.url =~ %r{^ja/} then '日本語' else 'English' end %></span>
-	      </div>
-	    </li>
-	  <% end %>
-	  </table>
-        </main>
-      <%= include 'footer.html.erb' %>
-    </body>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml">
+    <title>explain / 説明</title>
+  </head>
+  <body>
+    <%= include 'header.html.erb' %>
+    <main id="index">
+      <table class="pages">
+	<thead>
+	  <tr>
+	    <th>Title</th>
+	    <th>Language</th>
+	    <th>Created</th>
+	    <th>Modified</th>
+	  </tr>
+	</thead>
+        <% self.find('src/*/*.md').each do |page| %>
+	<tr>
+	  <td class="title"><a href="<%= page.url %>"><%= page.title %></a></td>
+          <td class="lang"><%= if page.url =~ %r{^ja/} then '日本語' else 'English' end %></td>
+	  <td class="date">
+	    <span class="header">Created:</span>
+	    <%= page.ctime&.strftime('%Y-%m-%d') %>
+	  </td>
+          <td class="date">
+	    <span class="header">Modified:</span>
+	    <%= page.mtime&.strftime('%Y-%m-%d') %>
+	  </td>
+	</tr>
+	<% end %>
+      </table>
+    </main>
+    <%= include 'footer.html.erb' %>
+  </body>
 </html>
 
