@@ -1,4 +1,4 @@
-# 毎月のあたまに総資産を手動で記録している
+# 毎月5日に手動で総資産を記録する
 
 日本に住んでいたころは [Money Forward](https://moneyforward.com/), アメリカにきてからは [Mint](https://mint.intuit.com/) をしばらく使ったあとに、いまは亡き Personal Capital (買収されて [Empower](https://www.empower.com/) の一部になった) と、ながらく、ウェブ上で各種銀行などの情報をまとめてくれるサービスをつかっていた。
 
