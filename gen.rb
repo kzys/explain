@@ -15,6 +15,7 @@ class Page
     @draft = false
     @ctime = nil
     @mtime = nil
+    @size = nil
   end
 
   attr_accessor :title
@@ -22,6 +23,7 @@ class Page
   attr_accessor :url
   attr_accessor :draft
   attr_accessor :ctime, :mtime
+  attr_accessor :size
 end
 
 class Gen
@@ -86,6 +88,7 @@ class Gen
       result.ctime = File.ctime(path)
       result.mtime = File.mtime(path)
     end
+    result.size = File.size(path)
 
     result
   end

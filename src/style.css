@@ -34,16 +34,6 @@ main {
     margin: 0 auto;
 }
 
-.meta {
-    font-size: 80%;
-    color: #333;
-    display: flex;
-    justify-content: space-between;
-}
-
-.meta span {
-    margin-right: 1rem;
-}
 
 ul.pages {
     list-style: none;
@@ -81,15 +71,6 @@ table {
 
     h1 {
         font-size: 1.5rem;
-    }
-
-    .meta {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .meta span {
-        margin-bottom: 0.25rem;
     }
 }
 
@@ -138,4 +119,20 @@ table.pages th {
     .pages td:last-child {
         padding-bottom: 1rem;
     }
+}
+
+.bar {
+    background: #ccc;
+    height: 5px;
+    border-radius: 2px;
+}
+
+#index article {
+    margin-bottom: 2rem;
+}
+
+#index h2 {
+    font-size: 1rem;
+    margin: 0;
+    padding: 0;
 }

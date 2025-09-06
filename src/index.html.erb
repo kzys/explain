@@ -9,30 +9,21 @@
   <body>
     <%= include 'header.html.erb' %>
     <main id="index">
-      <table class="pages">
-	<thead>
-	  <tr>
-	    <th>Title</th>
-	    <th>Language</th>
-	    <th>Created</th>
-	    <th>Modified</th>
-	  </tr>
-	</thead>
-        <% self.find('src/*/*.md').each do |page| %>
-	<tr>
-	  <td class="title"><a href="<%= page.url %>"><%= page.title %></a></td>
-          <td class="lang"><%= if page.url =~ %r{^ja/} then '日本語' else 'English' end %></td>
-	  <td class="date">
-	    <span class="header">Created:</span>
-	    <%= page.ctime&.strftime('%Y-%m-%d') %>
-	  </td>
-          <td class="date">
-	    <span class="header">Modified:</span>
-	    <%= page.mtime&.strftime('%Y-%m-%d') %>
-	  </td>
-	</tr>
-	<% end %>
-      </table>
+      <% self.find('src/*/*.md').each do |page| %>
+      <article>
+	<h2><a href="<%= page.url %>"><%= page.title %></a></h2>
+	<div class="meta">
+	  <div>
+	    Created: <%= page.ctime&.strftime('%Y-%m-%d') %>
+	    <% if page.mtime > page.ctime %>
+	    / Modified: <%= page.mtime&.strftime('%Y-%m-%d') %>
+	    <% end %>
+	  </div>
+	  <div><%= if page.url =~ %r{^ja/} then '日本語' else 'English' end %></div>
+	  <div class="bar" style="width:<%= [1, page.size/10].max %>px">&nbsp;</div>
+	</div>
+      </article>
+      <% end %>
     </main>
     <%= include 'footer.html.erb' %>
   </body>
