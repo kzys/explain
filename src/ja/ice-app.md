@@ -1,6 +1,5 @@
----
-title: Ice.app で macOS のメニューバーを片付ける
----
+# Ice.app で macOS のメニューバーを片付ける
+
 仕事で使っている MacBook Pro には Docker Desktop, [Notion Calendar](https://www.notion.com/product/calendar), 会社指定のエンドポイントモニタリングまで、色々なアプリケーションが入っていて、メニューバーの右側がだいぶごちゃごちゃしている。
 
 Notion Calander が次の予定までの時間を表示してくれるのが気に入っているのだけど、それが隠れると困るので、[Ice](https://icemenubar.app/) というアプリケーションを使いはじめた。
