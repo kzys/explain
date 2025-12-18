@@ -97,6 +97,16 @@ class Gen
     ERB.new(Pathname('view').join(path).read).result(binding)
   end
 
+  def site_root(page)
+    # Calculate relative path back to root based on current page's URL depth
+    depth = page.url.count('/')
+    if depth == 0
+      "."
+    else
+      ("../" * depth).chomp("/")
+    end
+  end
+
   def run
     layout = ERB.new(Pathname('view').join('layout.html.erb').read)
 

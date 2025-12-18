@@ -9,7 +9,7 @@
   <body>
     <%= include 'header.html.erb' %>
     <main id="index">
-      <% self.find('src/*/*.md').sort{|a, b| b.mtime <=> a.mtime }.each do |page| %>
+      <% self.find('src/**/*.md').sort{|a, b| b.mtime <=> a.mtime }.each do |page| %>
       <article>
 	<h2><a href="<%= page.url %>"><%= page.title %></a></h2>
 	<div class="meta">
