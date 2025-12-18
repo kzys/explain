@@ -138,13 +138,35 @@ table.pages th {
 }
 
 .page-metadata {
-    display: flex;
-    gap: 1.5rem;
     margin: 0.5rem 0 2rem 0;
     font-size: 85%;
     color: #666;
+    position: relative;
 }
 
-.page-metadata p {
+.page-metadata .changes-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
     margin: 0;
+    padding: 0 0 0 1rem;
+    list-style: none;
+    align-items: flex-end;
+    min-height: 5rem;
+}
+
+.page-metadata .changes-items li {
+    transform: rotate(-20deg);
+    transform-origin: bottom left;
+    white-space: nowrap;
+    margin-right: -3.5rem;
+    margin-left: 0.25rem;
+}
+
+.page-metadata .changes-items li::before {
+    content: '●';
+    margin-right: 0.5rem;
+    font-size: 1.2em;
+    line-height: 0;
+    vertical-align: middle;
 }

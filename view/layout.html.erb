@@ -8,15 +8,19 @@
     <body>
       <%= include 'header.html.erb' %>
       <main>
+        <% if page.changes && page.changes.length > 0 %>
+          <div class="page-metadata">
+            <ul class="changes-items">
+              <% reversed = page.changes.reverse %>
+              <% reversed.each_with_index do |timestamp, index| %>
+                <li>
+                  <time datetime="<%= timestamp.iso8601 %>"><%= timestamp.strftime('%Y-%m-%d %H:%M') %></time><% if index == 0 %> - created<% else %> - updated<% end %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
         <h1><%= page.title %></h1>
-        <div class="page-metadata">
-          <% if page.ctime %>
-            <p>Created: <time datetime="<%= page.ctime.iso8601 %>"><%= page.ctime.strftime('%Y-%m-%d') %></time></p>
-          <% end %>
-          <% if page.mtime %>
-            <p>Modified: <time datetime="<%= page.mtime.iso8601 %>"><%= page.mtime.strftime('%Y-%m-%d') %></time></p>
-          <% end %>
-        </div>
         <%= page.content %>
       </main>
       <%= include 'footer.html.erb' %>

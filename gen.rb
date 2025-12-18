@@ -13,8 +13,7 @@ class Page
     @content = nil
     @url = nil
     @draft = false
-    @ctime = nil
-    @mtime = nil
+    @changes = []
     @size = nil
   end
 
@@ -22,8 +21,17 @@ class Page
   attr_accessor :content
   attr_accessor :url
   attr_accessor :draft
-  attr_accessor :ctime, :mtime
+  attr_accessor :changes
   attr_accessor :size
+
+  # Convenience methods for backward compatibility
+  def ctime
+    @changes.last
+  end
+
+  def mtime
+    @changes.first
+  end
 end
 
 class Gen
@@ -85,12 +93,13 @@ class Gen
     url.gsub!(/\.md$/, '.html')
     result.url = url
 
-    if times = @file_to_time[path]
-      result.ctime = times[-1]
-      result.mtime = times[0]
+    # Convert path to string for lookup in @file_to_time (which uses string keys)
+    path_str = path.is_a?(Pathname) ? path.to_s : path
+    if times = @file_to_time[path_str]
+      result.changes = times
     else
-      result.ctime = File.ctime(path)
-      result.mtime = File.mtime(path)
+      # If not in git, use file system times
+      result.changes = [File.mtime(path)]
     end
     result.size = File.size(path)
 
