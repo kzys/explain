@@ -1,3 +1,6 @@
+---
+draft: true
+---
 # beelink2
 
 Beelink Mini S12 in my parent's home in Japan.

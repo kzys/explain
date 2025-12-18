@@ -1,3 +1,6 @@
+---
+draft: true
+---
 # Forerunner 165
 
 2024年2月に買った。それ以前は Fitbit Inspire HR を使っていたのだけど、もうちょっと真面目に走ろうと思ったのと、Google に買収された後の Fitbit の将来が不安だったのもあって、乗り換えた。

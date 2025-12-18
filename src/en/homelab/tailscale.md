@@ -1,3 +1,6 @@
+---
+draft: true
+---
 # Tailscale
 
 I occasionally use [Tailscale](https://tailscale.com/) to access Japanese websites. Having a real residential IP address in Japan is sometimes handy, since it is hard to ban, compared to commercial VPNs.

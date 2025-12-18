@@ -1,3 +1,6 @@
+---
+draft: true
+---
 # Enable hibernation on Linux laptops
 
 Basically following [Get hibernate working with LUKS](https://rdrn.me/ubuntu-hibernate-luks/) worked for me.

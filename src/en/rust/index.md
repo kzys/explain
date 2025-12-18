@@ -1,5 +1,6 @@
 ---
 title: Rust
+draft: true
 ---
 
 # Rust
