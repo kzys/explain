@@ -12,13 +12,19 @@
       <% self.find('src/**/*.md').sort{|a, b| b.mtime <=> a.mtime }.each do |page| %>
       <article>
 	<h2><a href="<%= page.url %>"><%= page.title %></a></h2>
-	<div class="meta">
-	  <div>
-	    Created: <%= page.ctime&.strftime('%Y-%m-%d') %>
-	    <% if page.mtime > page.ctime %>
-	    / Modified: <%= page.mtime&.strftime('%Y-%m-%d') %>
-	    <% end %>
+	<% if page.changes && page.changes.length > 0 %>
+	  <div class="page-metadata">
+	    <ul class="changes-items">
+	      <% reversed = page.changes.reverse %>
+	      <% reversed.each_with_index do |timestamp, index| %>
+		<li>
+		  <time datetime="<%= timestamp.iso8601 %>"><%= timestamp.strftime('%Y-%m-%d %H:%M') %></time><% if index == 0 %> - created<% else %> - updated<% end %>
+		</li>
+	      <% end %>
+	    </ul>
 	  </div>
+	<% end %>
+	<div class="meta">
 	  <div><%= if page.url =~ %r{^ja/} then '日本語' else 'English' end %></div>
 	  <div class="bar" style="width:<%= [1, page.size/10].max %>px">&nbsp;</div>
 	</div>

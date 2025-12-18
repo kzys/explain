@@ -8,6 +8,7 @@
     <body>
       <%= include 'header.html.erb' %>
       <main>
+        <h1><%= page.title %></h1>
         <% if page.changes && page.changes.length > 0 %>
           <div class="page-metadata">
             <ul class="changes-items">
@@ -20,7 +21,6 @@
             </ul>
           </div>
         <% end %>
-        <h1><%= page.title %></h1>
         <%= page.content %>
       </main>
       <%= include 'footer.html.erb' %>

@@ -1,3 +1,8 @@
+:root {
+    --timeline-rotation: -20deg;
+    --timeline-text-width: 12em;
+}
+
 body {
     font-family: sans-serif;
     margin: 0 1em;
@@ -128,7 +133,12 @@ table.pages th {
 }
 
 #index article {
-    margin-bottom: 2rem;
+    margin-bottom: 0;
+    padding: 1rem;
+}
+
+#index article:nth-child(even) {
+    background: #f9f9f9;
 }
 
 #index h2 {
@@ -138,7 +148,7 @@ table.pages th {
 }
 
 .page-metadata {
-    margin: 0.5rem 0 2rem 0;
+    margin: 0.25rem 0 0.75rem 0;
     font-size: 85%;
     color: #666;
     position: relative;
@@ -149,18 +159,18 @@ table.pages th {
     flex-wrap: wrap;
     gap: 0;
     margin: 0;
-    padding: 0 0 0 1rem;
+    padding: calc(abs(sin(var(--timeline-rotation))) * var(--timeline-text-width)) 0 0 0;
     list-style: none;
     align-items: flex-end;
-    min-height: 5rem;
 }
 
 .page-metadata .changes-items li {
-    transform: rotate(-20deg);
+    transform: rotate(var(--timeline-rotation));
     transform-origin: bottom left;
     white-space: nowrap;
-    margin-right: -3.5rem;
-    margin-left: 0.25rem;
+    margin-right: -8rem;
+    margin-left: 0.1rem;
+    font-size: 90%;
 }
 
 .page-metadata .changes-items li::before {
