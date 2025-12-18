@@ -66,16 +66,20 @@ class Gen
       md = raw
     end
 
+    # Parse to extract title if needed
     doc = Markly.parse(md)
     unless result.title
       doc.walk do |node|
         if node.type == :header and node.header_level == 1
           result.title = node.first_child.string_content
+          break
         end
       end
     end
 
-    result.content = doc.to_html
+    # Remove h1 from markdown and re-parse for content (we'll render title separately)
+    md = md.sub(/^#\s+.*$\n?/, '')
+    result.content = Markly.parse(md).to_html
 
     url = Pathname(path).relative_path_from(@src_dir).to_s
     url.gsub!(/\.md$/, '.html')

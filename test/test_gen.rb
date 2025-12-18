@@ -22,7 +22,6 @@ class TestGen < Minitest::Test
     vm = @gen.parse_file('test/markdown.md')
     assert_equal('h1', vm.title)
     assert_equal(<<END, vm.content)
-<h1>h1</h1>
 <p>foo</p>
 <hr />
 <p>bar</p>
@@ -33,7 +32,8 @@ END
   def test_h1_title_extraction
     vm = @gen.parse_file('test/h1_title.md')
     assert_equal('My H1 Title', vm.title)
-    assert_match(%r{<h1>My H1 Title</h1>}, vm.content)
+    # H1 is now rendered separately in the layout, not in content
+    refute_match(%r{<h1>My H1 Title</h1>}, vm.content)
     assert_equal(false, vm.draft)
   end
 

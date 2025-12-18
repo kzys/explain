@@ -7,7 +7,18 @@
     </head>
     <body>
       <%= include 'header.html.erb' %>
-      <main><%= page.content %></main>
+      <main>
+        <h1><%= page.title %></h1>
+        <div class="page-metadata">
+          <% if page.ctime %>
+            <p>Created: <time datetime="<%= page.ctime.iso8601 %>"><%= page.ctime.strftime('%Y-%m-%d') %></time></p>
+          <% end %>
+          <% if page.mtime %>
+            <p>Modified: <time datetime="<%= page.mtime.iso8601 %>"><%= page.mtime.strftime('%Y-%m-%d') %></time></p>
+          <% end %>
+        </div>
+        <%= page.content %>
+      </main>
       <%= include 'footer.html.erb' %>
     </body>
 </html>
