@@ -9,7 +9,9 @@
   <body>
     <%= include 'header.html.erb' %>
     <main id="index">
-      <% self.find('src/**/*.md').sort{|a, b| b.mtime <=> a.mtime }.each do |page| %>
+      <% pages = self.find('src/**/*.md').sort{|a, b| b.mtime <=> a.mtime } %>
+      <% max_size = pages.map(&:size).max %>
+      <% pages.each do |page| %>
       <article>
 	<h2><a href="<%= page.url %>"><%= page.title %></a></h2>
 	<% if page.changes && page.changes.length > 0 %>
@@ -26,7 +28,7 @@
 	<% end %>
 	<div class="meta">
 	  <div><%= if page.url =~ %r{^ja/} then '日本語' else 'English' end %></div>
-	  <div class="bar" style="width:<%= [1, page.size/10].max %>px">&nbsp;</div>
+	  <div class="bar" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%">&nbsp;</div>
 	</div>
       </article>
       <% end %>
