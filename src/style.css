@@ -180,3 +180,87 @@ table.pages th {
     line-height: 0;
     vertical-align: middle;
 }
+
+.language-ratio {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.language-ratio h2 {
+    margin: 0 0 1rem 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.ratio-bars {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    height: 40px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.ratio-bar {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    transition: all 0.3s ease;
+}
+
+.ratio-bar:hover {
+    opacity: 0.8;
+}
+
+.ja-bar {
+    background: #4a90e2;
+}
+
+.en-bar {
+    background: #50c878;
+}
+
+.ratio-label {
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.2;
+}
+
+.lang-name {
+    font-size: 0.9rem;
+}
+
+.lang-percent {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+@media (max-width: 480px) {
+    .language-ratio {
+        padding: 1rem;
+    }
+
+    .ratio-bars {
+        height: 35px;
+    }
+
+    .ratio-bar {
+        padding: 0 0.5rem;
+    }
+
+    .lang-name {
+        font-size: 0.8rem;
+    }
+
+    .lang-percent {
+        font-size: 0.75rem;
+    }
+}
