@@ -128,8 +128,14 @@ table.pages th {
 
 .bar {
     background: #ccc;
-    height: 5px;
+    height: 24px;
     border-radius: 2px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    font-size: 0.85rem;
+    color: #333;
+    white-space: nowrap;
 }
 
 #index article {

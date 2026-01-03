@@ -34,25 +34,52 @@
           </div>
         </div>
       </div>
-      <% pages.each do |page| %>
+      <% grouped = self.group_by_content(pages) %>
+      <% grouped.each do |base_path, group_pages| %>
       <article>
-	<h2><a href="<%= page.url %>"><%= page.title %></a></h2>
-	<% if page.changes && page.changes.length > 0 %>
-	  <div class="page-metadata">
-	    <ul class="changes-items">
-	      <% reversed = page.changes.reverse %>
-	      <% reversed.each_with_index do |timestamp, index| %>
-		<li>
-		  <time datetime="<%= timestamp.iso8601 %>"><%= timestamp.strftime('%Y-%m-%d %H:%M') %></time><% if index == 0 %> - created<% else %> - updated<% end %>
-		</li>
+	<h2>
+	  <% group_pages.each_with_index do |page, index| %>
+	    <a href="<%= page.url %>"><%= page.title %></a><% if group_pages.length > 1 %><% if page.url =~ %r{^ja/} %> [JA]<% else %> [EN]<% end %><% end %><% if index < group_pages.length - 1 %> / <% end %>
+	  <% end %>
+	</h2>
+	<% if group_pages.length > 1 %>
+	  <% group_pages.each do |page| %>
+	    <div class="language-section">
+	      <% if page.changes && page.changes.length > 0 %>
+		<div class="page-metadata">
+		  <ul class="changes-items">
+		    <% reversed = page.changes.reverse %>
+		    <% reversed.each_with_index do |timestamp, index| %>
+		      <li>
+			<time datetime="<%= timestamp.iso8601 %>"><%= timestamp.strftime('%Y-%m-%d %H:%M') %></time><% if index == 0 %> - created<% else %> - updated<% end %>
+		      </li>
+		    <% end %>
+		  </ul>
+		</div>
 	      <% end %>
-	    </ul>
+	      <div class="meta">
+		<div class="bar" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= if page.url =~ %r{^ja/} then '日本語' else 'English' end %></div>
+	      </div>
+	    </div>
+	  <% end %>
+	<% else %>
+	  <% page = group_pages.first %>
+	  <% if page.changes && page.changes.length > 0 %>
+	    <div class="page-metadata">
+	      <ul class="changes-items">
+		<% reversed = page.changes.reverse %>
+		<% reversed.each_with_index do |timestamp, index| %>
+		  <li>
+		    <time datetime="<%= timestamp.iso8601 %>"><%= timestamp.strftime('%Y-%m-%d %H:%M') %></time><% if index == 0 %> - created<% else %> - updated<% end %>
+		  </li>
+		<% end %>
+	      </ul>
+	    </div>
+	  <% end %>
+	  <div class="meta">
+	    <div class="bar" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= if page.url =~ %r{^ja/} then '日本語' else 'English' end %></div>
 	  </div>
 	<% end %>
-	<div class="meta">
-	  <div><%= if page.url =~ %r{^ja/} then '日本語' else 'English' end %></div>
-	  <div class="bar" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%">&nbsp;</div>
-	</div>
       </article>
       <% end %>
     </main>

@@ -126,6 +126,7 @@ class Gen
     Find.find(@src_dir.to_s) do |path|
       next if File.directory?(path)
       next if path =~ /~$/
+      next if File.basename(path) =~ /^\.#/
 
       path = Pathname(path)
       html_path = @dest_dir + path.relative_path_from(@src_dir)
@@ -163,6 +164,31 @@ class Gen
     end.delete_if do |page|
       page and page.draft
     end.sort_by {|p| p.ctime.to_s }.reverse
+  end
+
+  def group_by_content(pages)
+    # Group pages by their base path (without language prefix)
+    groups = {}
+
+    pages.each do |page|
+      # Extract base path without language prefix (en/ or ja/)
+      base_path = page.url.sub(%r{^(en|ja)/}, '')
+
+      groups[base_path] ||= []
+      groups[base_path] << page
+    end
+
+    # Sort each group by language (en first, then ja)
+    groups.each do |base_path, group_pages|
+      groups[base_path] = group_pages.sort_by do |p|
+        p.url =~ %r{^en/} ? 0 : 1
+      end
+    end
+
+    # Sort groups by most recent modification time
+    groups.sort_by do |base_path, group_pages|
+      group_pages.map(&:mtime).max
+    end.reverse.to_h
   end
 end
 
