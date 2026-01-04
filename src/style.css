@@ -248,6 +248,25 @@ table.pages th {
     opacity: 0.9;
 }
 
+.lang-tag {
+    display: inline-block;
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+    font-size: 0.75em;
+    font-weight: 600;
+    color: white;
+    white-space: nowrap;
+    vertical-align: baseline;
+}
+
+.lang-tag.lang-ja {
+    background: #2c3e50;
+}
+
+.lang-tag.lang-en {
+    background: #3498db;
+}
+
 @media (max-width: 480px) {
     .language-ratio {
         padding: 1rem;

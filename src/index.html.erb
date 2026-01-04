@@ -39,7 +39,7 @@
       <article>
 	<h2>
 	  <% group_pages.each_with_index do |page, index| %>
-	    <a href="<%= page.url %>"><%= page.title %></a><% if group_pages.length > 1 %><% if page.url =~ %r{^ja/} %> [JA]<% else %> [EN]<% end %><% end %><% if index < group_pages.length - 1 %> / <% end %>
+	    <a href="<%= page.url %>"><%= page.title %><% if group_pages.length > 1 %> <span class="lang-tag<% if page.url =~ %r{^ja/} %> lang-ja<% else %> lang-en<% end %>"><% if page.url =~ %r{^ja/} %>日本語<% else %>English<% end %></span><% end %></a><% if index < group_pages.length - 1 %> / <% end %>
 	  <% end %>
 	</h2>
 	<% if group_pages.length > 1 %>
