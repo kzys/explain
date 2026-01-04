@@ -299,6 +299,19 @@ table.pages th {
     background: #3498db;
 }
 
+.directory-tag {
+    display: inline-block;
+    padding: 0.15em 0.5em;
+    border-radius: 4px;
+    font-size: 0.7em;
+    font-weight: 600;
+    color: white;
+    background: #95a5a6;
+    white-space: nowrap;
+    vertical-align: baseline;
+    margin-right: 0.5em;
+}
+
 .language-section {
     margin-bottom: 1.5rem;
     padding-bottom: 1.5rem;

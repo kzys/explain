@@ -178,3 +178,52 @@ class TestGroupByContent < Minitest::Test
     assert_kind_of(Hash, grouped)
   end
 end
+
+class TestPageDirectory < Minitest::Test
+  def setup
+    dir = Dir.mktmpdir
+    @gen = Gen.new(Pathname('testdata/src'), dir)
+  end
+
+  def test_directory_with_single_level
+    # ja/music/tricot.html -> "music"
+    page = @gen.parse_file('test/markdown.md')
+    page.url = 'ja/music/tricot.html'
+    assert_equal('music', page.directory)
+  end
+
+  def test_directory_with_nested_levels
+    # ja/foo/bar/baz.html -> "foo/bar"
+    page = @gen.parse_file('test/markdown.md')
+    page.url = 'ja/foo/bar/baz.html'
+    assert_equal('foo/bar', page.directory)
+  end
+
+  def test_directory_in_root
+    # ja/tricot.html -> nil
+    page = @gen.parse_file('test/markdown.md')
+    page.url = 'ja/tricot.html'
+    assert_nil(page.directory)
+  end
+
+  def test_directory_english_page
+    # en/homelab/server.html -> "homelab"
+    page = @gen.parse_file('test/markdown.md')
+    page.url = 'en/homelab/server.html'
+    assert_equal('homelab', page.directory)
+  end
+
+  def test_directory_english_nested
+    # en/linux/tutorials/setup.html -> "linux/tutorials"
+    page = @gen.parse_file('test/markdown.md')
+    page.url = 'en/linux/tutorials/setup.html'
+    assert_equal('linux/tutorials', page.directory)
+  end
+
+  def test_directory_english_root
+    # en/about.html -> nil
+    page = @gen.parse_file('test/markdown.md')
+    page.url = 'en/about.html'
+    assert_nil(page.directory)
+  end
+end

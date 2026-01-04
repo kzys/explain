@@ -73,6 +73,17 @@ class Page
   def human_size
     SizeFormatter.human_size(@size)
   end
+
+  # Extract directory/category from URL path
+  # e.g., "ja/music/tricot.html" -> "music"
+  #       "ja/tricot.html" -> nil
+  def directory
+    # Remove language prefix (en/ or ja/) and get the directory part
+    path_without_lang = @url.sub(%r{^(en|ja)/}, '')
+    parts = path_without_lang.split('/')
+    # If there's more than one part (directory + file), return the directory
+    parts.length > 1 ? parts[0..-2].join('/') : nil
+  end
 end
 
 class Gen
