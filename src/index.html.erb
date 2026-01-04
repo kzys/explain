@@ -58,7 +58,7 @@
 		</div>
 	      <% end %>
 	      <div class="meta">
-		<div class="bar" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= if page.url =~ %r{^ja/} then '日本語' else 'English' end %></div>
+		<div class="bar <%= if page.url =~ %r{^ja/} then 'ja-bar' else 'en-bar' end %>" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= if page.url =~ %r{^ja/} then '日本語' else 'English' end %></div>
 	      </div>
 	    </div>
 	  <% end %>
@@ -77,7 +77,7 @@
 	    </div>
 	  <% end %>
 	  <div class="meta">
-	    <div class="bar" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= if page.url =~ %r{^ja/} then '日本語' else 'English' end %></div>
+	    <div class="bar <%= if page.url =~ %r{^ja/} then 'ja-bar' else 'en-bar' end %>" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= if page.url =~ %r{^ja/} then '日本語' else 'English' end %></div>
 	  </div>
 	<% end %>
       </article>

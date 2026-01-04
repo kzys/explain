@@ -127,15 +127,15 @@ table.pages th {
 }
 
 .bar {
-    background: #ccc;
     height: 24px;
-    border-radius: 2px;
+    border-radius: 4px;
     display: flex;
     align-items: center;
-    padding-left: 8px;
+    padding: 0 8px;
     font-size: 0.85rem;
-    color: #333;
+    color: white;
     white-space: nowrap;
+    min-width: fit-content;
 }
 
 #index article {
@@ -223,16 +223,15 @@ table.pages th {
 }
 
 .ja-bar {
-    background: #4a90e2;
+    background: #e74c3c;
 }
 
 .en-bar {
-    background: #50c878;
+    background: #3498db;
 }
 
 .ratio-label {
     color: white;
-    font-weight: 600;
     font-size: 0.9rem;
     display: flex;
     flex-direction: column;
