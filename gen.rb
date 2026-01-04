@@ -32,6 +32,31 @@ class Page
   def mtime
     @changes.first
   end
+
+  # Language detection methods
+  def language
+    @url =~ %r{^ja/} ? 'ja' : 'en'
+  end
+
+  def ja?
+    language == 'ja'
+  end
+
+  def en?
+    language == 'en'
+  end
+
+  def language_name
+    ja? ? '日本語' : 'English'
+  end
+
+  def language_class
+    ja? ? 'lang-ja' : 'lang-en'
+  end
+
+  def bar_class
+    ja? ? 'ja-bar' : 'en-bar'
+  end
 end
 
 class Gen

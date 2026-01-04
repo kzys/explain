@@ -11,8 +11,8 @@
     <main id="index">
       <% pages = self.find('src/**/*.md').sort{|a, b| b.mtime <=> a.mtime } %>
       <% max_size = pages.map(&:size).max %>
-      <% ja_size = pages.select{|p| p.url =~ %r{^ja/}}.map(&:size).sum %>
-      <% en_size = pages.select{|p| p.url =~ %r{^en/}}.map(&:size).sum %>
+      <% ja_size = pages.select(&:ja?).map(&:size).sum %>
+      <% en_size = pages.select(&:en?).map(&:size).sum %>
       <% total_size = ja_size + en_size %>
       <% ja_percent = total_size > 0 ? (ja_size.to_f / total_size * 100).round(1) : 0 %>
       <% en_percent = total_size > 0 ? (en_size.to_f / total_size * 100).round(1) : 0 %>
@@ -39,7 +39,7 @@
       <article>
 	<h2>
 	  <% group_pages.each_with_index do |page, index| %>
-	    <a href="<%= page.url %>"><%= page.title %><% if group_pages.length > 1 %> <span class="lang-tag<% if page.url =~ %r{^ja/} %> lang-ja<% else %> lang-en<% end %>"><% if page.url =~ %r{^ja/} %>日本語<% else %>English<% end %></span><% end %></a><% if index < group_pages.length - 1 %> / <% end %>
+	    <a href="<%= page.url %>"><%= page.title %><% if group_pages.length > 1 %> <span class="lang-tag <%= page.language_class %>"><%= page.language_name %></span><% end %></a><% if index < group_pages.length - 1 %> / <% end %>
 	  <% end %>
 	</h2>
 	<% if group_pages.length > 1 %>
@@ -58,7 +58,7 @@
 		</div>
 	      <% end %>
 	      <div class="meta">
-		<div class="bar <%= if page.url =~ %r{^ja/} then 'ja-bar' else 'en-bar' end %>" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= if page.url =~ %r{^ja/} then '日本語' else 'English' end %></div>
+		<div class="bar <%= page.bar_class %>" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= page.language_name %></div>
 	      </div>
 	    </div>
 	  <% end %>
@@ -77,7 +77,7 @@
 	    </div>
 	  <% end %>
 	  <div class="meta">
-	    <div class="bar <%= if page.url =~ %r{^ja/} then 'ja-bar' else 'en-bar' end %>" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= if page.url =~ %r{^ja/} then '日本語' else 'English' end %></div>
+	    <div class="bar <%= page.bar_class %>" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= page.language_name %></div>
 	  </div>
 	<% end %>
       </article>
