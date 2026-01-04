@@ -129,7 +129,7 @@ class Gen
 
     # Remove h1 from markdown and re-parse for content (we'll render title separately)
     md = md.sub(/^#\s+.*$\n?/, '')
-    result.content = Markly.parse(md).to_html
+    result.content = Markly.parse(md, flags: Markly::UNSAFE).to_html(flags: Markly::UNSAFE)
 
     url = Pathname(path).relative_path_from(@src_dir).to_s
     url.gsub!(/\.md$/, '.html')
