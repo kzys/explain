@@ -160,8 +160,26 @@ table.pages th {
 
 #index .article-link {
     display: block;
-    text-decoration: none;
+    text-decoration: none !important;
     color: inherit;
+    position: relative;
+    padding-right: 2rem;
+}
+
+#index .article-link::after {
+    content: "›";
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 1.2rem;
+}
+
+#index .article-link:hover,
+#index .article-link:active,
+#index .article-link:focus {
+    text-decoration: none !important;
 }
 
 #index .article-link h2 {
