@@ -41,7 +41,7 @@
 	  <% group_pages.each do |page| %>
 	    <div class="language-section">
 	      <a href="<%= page.url %>" class="article-link">
-		<h2><%= page.title %> <span class="lang-tag <%= page.language_class %>"><%= page.language_name %></span></h2>
+		<h2><%= page.title %></h2>
 		<% if page.changes && page.changes.length > 0 %>
 		  <div class="page-metadata">
 		    <ul class="changes-items">

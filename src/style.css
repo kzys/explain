@@ -139,12 +139,10 @@ table.pages th {
 }
 
 #index article {
-    margin-bottom: 0;
+    margin-bottom: 1rem;
     padding: 1rem;
-}
-
-#index article:nth-child(even) {
-    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
 }
 
 #index h2 {
@@ -302,10 +300,14 @@ table.pages th {
 
 .language-section {
     margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .language-section:last-child {
     margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
 }
 
 @media (max-width: 480px) {
