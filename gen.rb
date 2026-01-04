@@ -6,6 +6,7 @@ require 'yaml'
 require 'open3'
 require 'time'
 require 'yaml'
+require 'digest'
 
 class Page
   def initialize
@@ -64,6 +65,7 @@ class Gen
     @src_dir = Pathname(src_dir)
     @dest_dir = Pathname(dest_dir)
     @config = config
+    @asset_hashes = {}
 
     stdin, stdout, stderr, wait_thr = Open3.popen3('git', 'log', '--name-only', "--format=format:\t%aI")
     stdin.close
@@ -145,15 +147,66 @@ class Gen
     end
   end
 
+  def file_hash(content)
+    # Generate a short hash (first 8 chars of SHA256) for cache busting
+    Digest::SHA256.hexdigest(content)[0...8]
+  end
+
+  def asset_path(filename)
+    # Return the hashed version of the asset filename if it exists
+    @asset_hashes[filename] || filename
+  end
+
   def run
     layout = ERB.new(Pathname('view').join('layout.html.erb').read)
 
+    # Collect all files to process
+    files_to_process = []
     Find.find(@src_dir.to_s) do |path|
       next if File.directory?(path)
       next if path =~ /~$/
       next if File.basename(path) =~ /^\.#/
+      files_to_process << Pathname(path)
+    end
 
-      path = Pathname(path)
+    # First pass: process static assets to build hash mappings
+    cachebust_exts = ['.css', '.js', '.ico', '.svg', '.woff', '.woff2', '.ttf', '.eot']
+
+    files_to_process.each do |path|
+      next if ['.md', '.erb'].include?(path.extname)
+
+      html_path = @dest_dir + path.relative_path_from(@src_dir)
+      d = html_path.dirname
+      d.mkpath unless d.exist?
+
+      content = File.read(path)
+
+      if cachebust_exts.include?(path.extname)
+        # Calculate hash and generate new filename
+        hash = file_hash(content)
+        basename = path.basename(path.extname).to_s
+        extname = path.extname
+        hashed_filename = "#{basename}-#{hash}#{extname}"
+
+        # Store mapping of original filename -> hashed filename
+        original_filename = path.basename.to_s
+        @asset_hashes[original_filename] = hashed_filename
+
+        # Write file with hashed name
+        hashed_path = html_path.dirname + hashed_filename
+        File.open(hashed_path, 'w') do |f|
+          f.write(content)
+        end
+      else
+        # Copy other files as-is
+        File.open(html_path, 'w') do |f|
+          f.write(content)
+        end
+      end
+    end
+
+    # Second pass: process markdown and ERB files that can reference hashed assets
+    files_to_process.each do |path|
       html_path = @dest_dir + path.relative_path_from(@src_dir)
 
       d = html_path.dirname
@@ -174,10 +227,6 @@ class Gen
         dest = @dest_dir + path.relative_path_from(@src_dir)
         File.open(dest.to_s.gsub(/\.erb$/, ''), 'w') do |f|
           f.write(ERB.new(path.read).result(binding))
-        end
-      else
-        File.open(html_path, 'w') do |f|
-          f.write(File.read(path))
         end
       end
     end
