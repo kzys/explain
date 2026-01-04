@@ -23,13 +23,13 @@
           <div class="ratio-bar ja-bar" style="width:<%= ja_percent %>%">
             <span class="ratio-label">
               <span class="lang-name">日本語</span>
-              <span class="lang-percent"><%= ja_percent %>%</span>
+              <span class="lang-percent"><%= ja_percent %>% · <%= human_size(ja_size) %></span>
             </span>
           </div>
           <div class="ratio-bar en-bar" style="width:<%= en_percent %>%">
             <span class="ratio-label">
               <span class="lang-name">English</span>
-              <span class="lang-percent"><%= en_percent %>%</span>
+              <span class="lang-percent"><%= en_percent %>% · <%= human_size(en_size) %></span>
             </span>
           </div>
         </div>
@@ -55,7 +55,7 @@
 		  </div>
 		<% end %>
 		<div class="meta">
-		  <div class="bar <%= page.bar_class %>" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= page.language_name %></div>
+		  <div class="bar <%= page.bar_class %>" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= page.language_name %> · <%= page.human_size %></div>
 		</div>
 	      </a>
 	    </div>
@@ -77,7 +77,7 @@
 	      </div>
 	    <% end %>
 	    <div class="meta">
-	      <div class="bar <%= page.bar_class %>" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= page.language_name %></div>
+	      <div class="bar <%= page.bar_class %>" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= page.language_name %> · <%= page.human_size %></div>
 	    </div>
 	  </a>
 	<% end %>

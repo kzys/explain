@@ -8,6 +8,17 @@ require 'time'
 require 'yaml'
 require 'digest'
 
+module SizeFormatter
+  def self.human_size(size)
+    kb = size / 1024.0
+    if kb < 1
+      "#{size} bytes"
+    else
+      "#{kb.round(1)} KiB"
+    end
+  end
+end
+
 class Page
   def initialize
     @title = nil
@@ -57,6 +68,10 @@ class Page
 
   def bar_class
     ja? ? 'ja-bar' : 'en-bar'
+  end
+
+  def human_size
+    SizeFormatter.human_size(@size)
   end
 end
 
@@ -155,6 +170,10 @@ class Gen
   def asset_path(filename)
     # Return the hashed version of the asset filename if it exists
     @asset_hashes[filename] || filename
+  end
+
+  def human_size(size)
+    SizeFormatter.human_size(size)
   end
 
   def run
