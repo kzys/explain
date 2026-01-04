@@ -153,6 +153,11 @@ table.pages th {
     padding: 0;
 }
 
+#index h2 a {
+    text-decoration: none;
+    color: inherit;
+}
+
 .page-metadata {
     margin: 0.25rem 0 0.75rem 0;
     font-size: 85%;
@@ -265,6 +270,14 @@ table.pages th {
 
 .lang-tag.lang-en {
     background: #3498db;
+}
+
+.language-section {
+    margin-bottom: 1.5rem;
+}
+
+.language-section:last-child {
+    margin-bottom: 0;
 }
 
 @media (max-width: 480px) {
