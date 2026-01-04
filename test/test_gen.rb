@@ -65,3 +65,29 @@ END
     @gen.run
   end
 end
+
+class TestSizeFormatter < Minitest::Test
+  def test_bytes
+    assert_equal('512 bytes', SizeFormatter.human_size(512))
+    assert_equal('1023 bytes', SizeFormatter.human_size(1023))
+  end
+
+  def test_kibibytes
+    assert_equal('1.0 KiB', SizeFormatter.human_size(1024))
+    assert_equal('1.5 KiB', SizeFormatter.human_size(1536))
+    assert_equal('10.2 KiB', SizeFormatter.human_size(10445))
+  end
+end
+
+class TestPageHumanSize < Minitest::Test
+  def setup
+    dir = Dir.mktmpdir
+    @gen = Gen.new(Pathname('testdata/src'), dir)
+  end
+
+  def test_page_human_size
+    vm = @gen.parse_file('test/markdown.md')
+    # Verify that the human_size method works on Page instances
+    assert_match(/bytes|KiB/, vm.human_size)
+  end
+end
