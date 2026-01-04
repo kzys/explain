@@ -158,6 +158,16 @@ table.pages th {
     color: inherit;
 }
 
+#index .article-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+#index .article-link h2 {
+    color: #333;
+}
+
 .page-metadata {
     margin: 0.25rem 0 0.75rem 0;
     font-size: 85%;

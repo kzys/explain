@@ -39,43 +39,47 @@
       <article>
 	<% if group_pages.length > 1 %>
 	  <% group_pages.each do |page| %>
-	    <h2><a href="<%= page.url %>"><%= page.title %> <span class="lang-tag <%= page.language_class %>"><%= page.language_name %></span></a></h2>
 	    <div class="language-section">
-	      <% if page.changes && page.changes.length > 0 %>
-		<div class="page-metadata">
-		  <ul class="changes-items">
-		    <% reversed = page.changes.reverse %>
-		    <% reversed.each_with_index do |timestamp, index| %>
-		      <li>
-			<time datetime="<%= timestamp.iso8601 %>"><%= timestamp.strftime('%Y-%m-%d %H:%M') %></time><% if index == 0 %> - created<% else %> - updated<% end %>
-		      </li>
-		    <% end %>
-		  </ul>
+	      <a href="<%= page.url %>" class="article-link">
+		<h2><%= page.title %> <span class="lang-tag <%= page.language_class %>"><%= page.language_name %></span></h2>
+		<% if page.changes && page.changes.length > 0 %>
+		  <div class="page-metadata">
+		    <ul class="changes-items">
+		      <% reversed = page.changes.reverse %>
+		      <% reversed.each_with_index do |timestamp, index| %>
+			<li>
+			  <time datetime="<%= timestamp.iso8601 %>"><%= timestamp.strftime('%Y-%m-%d %H:%M') %></time><% if index == 0 %> - created<% else %> - updated<% end %>
+			</li>
+		      <% end %>
+		    </ul>
+		  </div>
+		<% end %>
+		<div class="meta">
+		  <div class="bar <%= page.bar_class %>" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= page.language_name %></div>
 		</div>
-	      <% end %>
-	      <div class="meta">
-		<div class="bar <%= page.bar_class %>" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= page.language_name %></div>
-	      </div>
+	      </a>
 	    </div>
 	  <% end %>
 	<% else %>
-	  <h2><a href="<%= group_pages.first.url %>"><%= group_pages.first.title %></a></h2>
-	  <% page = group_pages.first %>
-	  <% if page.changes && page.changes.length > 0 %>
-	    <div class="page-metadata">
-	      <ul class="changes-items">
-		<% reversed = page.changes.reverse %>
-		<% reversed.each_with_index do |timestamp, index| %>
-		  <li>
-		    <time datetime="<%= timestamp.iso8601 %>"><%= timestamp.strftime('%Y-%m-%d %H:%M') %></time><% if index == 0 %> - created<% else %> - updated<% end %>
-		  </li>
-		<% end %>
-	      </ul>
+	  <a href="<%= group_pages.first.url %>" class="article-link">
+	    <h2><%= group_pages.first.title %></h2>
+	    <% page = group_pages.first %>
+	    <% if page.changes && page.changes.length > 0 %>
+	      <div class="page-metadata">
+		<ul class="changes-items">
+		  <% reversed = page.changes.reverse %>
+		  <% reversed.each_with_index do |timestamp, index| %>
+		    <li>
+		      <time datetime="<%= timestamp.iso8601 %>"><%= timestamp.strftime('%Y-%m-%d %H:%M') %></time><% if index == 0 %> - created<% else %> - updated<% end %>
+		    </li>
+		  <% end %>
+		</ul>
+	      </div>
+	    <% end %>
+	    <div class="meta">
+	      <div class="bar <%= page.bar_class %>" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= page.language_name %></div>
 	    </div>
-	  <% end %>
-	  <div class="meta">
-	    <div class="bar <%= page.bar_class %>" style="width:<%= [(page.size.to_f / max_size * 100).round(1), 1].max %>%"><%= page.language_name %></div>
-	  </div>
+	  </a>
 	<% end %>
       </article>
       <% end %>
