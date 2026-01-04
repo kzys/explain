@@ -1,5 +1,5 @@
 require 'simplecov'
-SimpleCov.minimum_coverage 70
+SimpleCov.minimum_coverage 80
 SimpleCov.start
 
 require 'minitest/autorun'
@@ -89,5 +89,92 @@ class TestPageHumanSize < Minitest::Test
     vm = @gen.parse_file('test/markdown.md')
     # Verify that the human_size method works on Page instances
     assert_match(/bytes|KiB/, vm.human_size)
+  end
+end
+
+class TestPageLanguageMethods < Minitest::Test
+  def setup
+    dir = Dir.mktmpdir
+    @gen = Gen.new(Pathname('testdata/src'), dir)
+  end
+
+  def test_japanese_page_language_methods
+    # Create a Japanese page by setting url to start with ja/
+    page = @gen.parse_file('test/markdown.md')
+    page.url = 'ja/test.html'
+
+    assert_equal('ja', page.language)
+    assert_equal(true, page.ja?)
+    assert_equal(false, page.en?)
+    assert_equal('日本語', page.language_name)
+    assert_equal('lang-ja', page.language_class)
+    assert_equal('ja-bar', page.bar_class)
+  end
+
+  def test_english_page_language_methods
+    # Create an English page by setting url to start with en/
+    page = @gen.parse_file('test/markdown.md')
+    page.url = 'en/test.html'
+
+    assert_equal('en', page.language)
+    assert_equal(false, page.ja?)
+    assert_equal(true, page.en?)
+    assert_equal('English', page.language_name)
+    assert_equal('lang-en', page.language_class)
+    assert_equal('en-bar', page.bar_class)
+  end
+end
+
+class TestGenHelperMethods < Minitest::Test
+  def setup
+    dir = Dir.mktmpdir
+    @gen = Gen.new(Pathname('testdata/src'), dir)
+  end
+
+  def test_site_root_depth_zero
+    page = @gen.parse_file('test/markdown.md')
+    page.url = 'index.html'
+    assert_equal('.', @gen.site_root(page))
+  end
+
+  def test_site_root_depth_one
+    page = @gen.parse_file('test/markdown.md')
+    page.url = 'en/about.html'
+    assert_equal('..', @gen.site_root(page))
+  end
+
+  def test_site_root_depth_two
+    page = @gen.parse_file('test/markdown.md')
+    page.url = 'en/blog/post.html'
+    assert_equal('../..', @gen.site_root(page))
+  end
+
+  def test_file_hash
+    content = 'test content'
+    hash = @gen.file_hash(content)
+    assert_equal(8, hash.length)
+    assert_match(/^[0-9a-f]{8}$/, hash)
+  end
+
+  def test_asset_path_with_hash
+    @gen.instance_variable_get(:@asset_hashes)['style.css'] = 'style-abc123.css'
+    assert_equal('style-abc123.css', @gen.asset_path('style.css'))
+  end
+
+  def test_asset_path_without_hash
+    assert_equal('unknown.css', @gen.asset_path('unknown.css'))
+  end
+end
+
+class TestGroupByContent < Minitest::Test
+  def setup
+    dir = Dir.mktmpdir
+    @gen = Gen.new(Pathname('testdata/src'), dir)
+  end
+
+  def test_group_by_content
+    pages = @gen.find('test/*.md')
+    grouped = @gen.group_by_content(pages)
+    assert_kind_of(Hash, grouped)
   end
 end
