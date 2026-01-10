@@ -4,7 +4,7 @@
 
 > The fact is, hackers are obsessed with free speech. Slashdot, the New York Times of hacking, has a whole section about it. I think most Slashdot readers take this for granted. But Plane & Pilot doesn’t have a section about free speech.
 
-突然そんなことを思い出したのは、Josh Gruber の [Let’s Call a Murder a Murder](https://daringfireball.net/2026/01/lets_call_a_murder_a_murder) が Hacker News で[フラグされていた](https://news.ycombinator.com/item?id=46548250) (いまは解除されている) からだ。
+突然そんなことを思い出したのは、John Gruber の [Let’s Call a Murder a Murder](https://daringfireball.net/2026/01/lets_call_a_murder_a_murder) が Hacker News で[フラグされていた](https://news.ycombinator.com/item?id=46548250) (いまは解除されている) からだ。
 
 Hacker News の[ガイドライン](https://news.ycombinator.com/newsguidelines.html)では、たしかに政治はオフトピックとされている。
 
