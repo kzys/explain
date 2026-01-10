@@ -10,6 +10,6 @@ Hacker News の[ガイドライン](https://news.ycombinator.com/newsguidelines.
 
 > Off-Topic: Most stories about politics, or crime, or sports, or celebrities, unless they're evidence of some interesting new phenomenon. Videos of pratfalls or disasters, or cute animal pictures. If they'd cover it on TV news, it's probably off-topic. 
 
-しかし「言論の自由」については議論するけれど、政治について議論しないのは無理だろうとも思う。
+しかし「言論の自由」については議論するけれど、政治について議論しないのは難しいだろうとも思う。
 
-結局、2025年の "Hacker News" は大成功したベンチャーキャピタルの運営するフォーラムであって、そこに「ハッカー」とついていることについて考えること自体、あんまり意味のあることではないのだろう。
+結局、いまの "Hacker News" は大成功したベンチャーキャピタルの運営するフォーラムであって、そこに「ハッカー」とついていることについて考えること自体、あんまり意味のあることではないのだろう。残念だけど。
