@@ -42,6 +42,13 @@
 	    <div class="language-section">
 	      <a href="<%= page.url %>" class="article-link">
 		<h2><% if page.directory %><span class="directory-tag"><%= page.directory %></span> <% end %><%= page.title %></h2>
+		<% if page.headlines.any? %>
+		  <ul class="headlines">
+		    <% page.headlines.each do |headline| %>
+		      <li class="headline-level-<%= headline[:level] %>"><%= headline[:text] %></li>
+		    <% end %>
+		  </ul>
+		<% end %>
 		<% if page.changes && page.changes.length > 0 %>
 		  <div class="page-metadata">
 		    <ul class="changes-items">
@@ -64,6 +71,13 @@
 	  <a href="<%= group_pages.first.url %>" class="article-link">
 	    <h2><% if group_pages.first.directory %><span class="directory-tag"><%= group_pages.first.directory %></span> <% end %><%= group_pages.first.title %></h2>
 	    <% page = group_pages.first %>
+	    <% if page.headlines.any? %>
+	      <ul class="headlines">
+		<% page.headlines.each do |headline| %>
+		  <li class="headline-level-<%= headline[:level] %>"><%= headline[:text] %></li>
+		<% end %>
+	      </ul>
+	    <% end %>
 	    <% if page.changes && page.changes.length > 0 %>
 	      <div class="page-metadata">
 		<ul class="changes-items">

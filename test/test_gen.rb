@@ -227,3 +227,78 @@ class TestPageDirectory < Minitest::Test
     assert_nil(page.directory)
   end
 end
+
+class TestExtractHeadlines < Minitest::Test
+  def setup
+    dir = Dir.mktmpdir
+    @gen = Gen.new(Pathname('testdata/src'), dir)
+  end
+
+  def test_single_headline
+    md = "# Hello World"
+    headlines = @gen.extract_headlines(md)
+    assert_equal(1, headlines.length)
+    assert_equal({ level: 1, text: "Hello World" }, headlines[0])
+  end
+
+  def test_multiple_headlines
+    md = <<~MD
+      # Main Title
+      Some content here.
+      ## Section One
+      More content.
+      ### Subsection
+      ## Section Two
+    MD
+    headlines = @gen.extract_headlines(md)
+    assert_equal(4, headlines.length)
+    assert_equal({ level: 1, text: "Main Title" }, headlines[0])
+    assert_equal({ level: 2, text: "Section One" }, headlines[1])
+    assert_equal({ level: 3, text: "Subsection" }, headlines[2])
+    assert_equal({ level: 2, text: "Section Two" }, headlines[3])
+  end
+
+  def test_headline_with_bold
+    md = "## Section **with bold**"
+    headlines = @gen.extract_headlines(md)
+    assert_equal(1, headlines.length)
+    assert_equal({ level: 2, text: "Section with bold" }, headlines[0])
+  end
+
+  def test_headline_with_italic
+    md = "## Section *with italic*"
+    headlines = @gen.extract_headlines(md)
+    assert_equal(1, headlines.length)
+    assert_equal({ level: 2, text: "Section with italic" }, headlines[0])
+  end
+
+  def test_headline_with_link
+    md = "## Section [with link](http://example.com)"
+    headlines = @gen.extract_headlines(md)
+    assert_equal(1, headlines.length)
+    assert_equal({ level: 2, text: "Section with link" }, headlines[0])
+  end
+
+  def test_no_headlines
+    md = "Just some plain text\nwithout any headlines."
+    headlines = @gen.extract_headlines(md)
+    assert_equal(0, headlines.length)
+  end
+
+  def test_all_heading_levels
+    md = <<~MD
+      # H1
+      ## H2
+      ### H3
+      #### H4
+      ##### H5
+      ###### H6
+    MD
+    headlines = @gen.extract_headlines(md)
+    assert_equal(6, headlines.length)
+    (1..6).each do |level|
+      assert_equal(level, headlines[level - 1][:level])
+      assert_equal("H#{level}", headlines[level - 1][:text])
+    end
+  end
+end

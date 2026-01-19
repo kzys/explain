@@ -27,6 +27,7 @@ class Page
     @draft = false
     @changes = []
     @size = nil
+    @headlines = []
   end
 
   attr_accessor :title
@@ -35,6 +36,7 @@ class Page
   attr_accessor :draft
   attr_accessor :changes
   attr_accessor :size
+  attr_accessor :headlines
 
   # Convenience methods for backward compatibility
   def ctime
@@ -141,6 +143,7 @@ class Gen
     # Remove h1 from markdown and re-parse for content (we'll render title separately)
     md = md.sub(/^#\s+.*$\n?/, '')
     result.content = Markly.parse(md, flags: Markly::UNSAFE).to_html(flags: Markly::UNSAFE)
+    result.headlines = extract_headlines(md)
 
     url = Pathname(path).relative_path_from(@src_dir).to_s
     url.gsub!(/\.md$/, '.html')
@@ -185,6 +188,31 @@ class Gen
 
   def human_size(size)
     SizeFormatter.human_size(size)
+  end
+
+  def extract_headlines(markdown)
+    doc = Markly.parse(markdown)
+    headlines = []
+
+    doc.walk do |node|
+      if node.type == :header
+        headlines << { level: node.header_level, text: collect_text(node) }
+      end
+    end
+
+    headlines
+  end
+
+  def collect_text(node)
+    text = ""
+    node.each do |child|
+      if child.type == :text
+        text += child.string_content
+      else
+        text += collect_text(child)
+      end
+    end
+    text
   end
 
   def run
