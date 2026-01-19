@@ -4,6 +4,9 @@
 
 ## macOS 風に Cmd と Ctrl を使いわける
 
+ながらく公私ともに macOS を使っていて、いまでも仕事は MacBook Pro をつかっていること、そもそも Cmd / Ctrl が別れているほうが macOS 由来のショートカットと Unix 由来のショートカットがかぶらなくて便利なので、Linux でも似たような使い勝手になるように設定している。
+
+
 ```
 keypress_delay_ms: 5
 
