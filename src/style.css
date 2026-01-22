@@ -191,6 +191,9 @@ table.pages th {
     position: relative;
 }
 
+/* Rotate each li individually rather than the ul, because CSS transform
+   doesn't change the element's bounding box - a rotated ul would still
+   occupy its pre-rotation space and cause overlap with surrounding content. */
 .page-metadata .changes-items {
     display: flex;
     flex-wrap: wrap;
