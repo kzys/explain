@@ -52,10 +52,10 @@
 		<% if page.changes && page.changes.length > 0 %>
 		  <div class="page-metadata">
 		    <ul class="changes-items">
-		      <% reversed = page.changes.reverse %>
+		      <% reversed = page.changes.reverse.uniq { |t| t.to_date } %>
 		      <% reversed.each_with_index do |timestamp, index| %>
 			<li>
-			  <time datetime="<%= timestamp.iso8601 %>"><%= timestamp.strftime('%Y-%m-%d %H:%M') %></time><% if index == 0 %> - created<% else %> - updated<% end %>
+			  <time datetime="<%= timestamp.strftime('%Y-%m-%d') %>"><%= timestamp.strftime('%Y-%m-%d') %></time><% if index == 0 %> - created<% else %> - updated<% end %>
 			</li>
 		      <% end %>
 		    </ul>
@@ -81,10 +81,10 @@
 	    <% if page.changes && page.changes.length > 0 %>
 	      <div class="page-metadata">
 		<ul class="changes-items">
-		  <% reversed = page.changes.reverse %>
+		  <% reversed = page.changes.reverse.uniq { |t| t.to_date } %>
 		  <% reversed.each_with_index do |timestamp, index| %>
 		    <li>
-		      <time datetime="<%= timestamp.iso8601 %>"><%= timestamp.strftime('%Y-%m-%d %H:%M') %></time><% if index == 0 %> - created<% else %> - updated<% end %>
+		      <time datetime="<%= timestamp.strftime('%Y-%m-%d') %>"><%= timestamp.strftime('%Y-%m-%d') %></time><% if index == 0 %> - created<% else %> - updated<% end %>
 		    </li>
 		  <% end %>
 		</ul>
