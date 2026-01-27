@@ -142,7 +142,13 @@ class Gen
 
     # Remove h1 from markdown and re-parse for content (we'll render title separately)
     md = md.sub(/^#\s+.*$\n?/, '')
-    result.content = Markly.parse(md, flags: Markly::UNSAFE).to_html(flags: Markly::UNSAFE)
+    doc = Markly.parse(md, flags: Markly::UNSAFE)
+    doc.walk do |node|
+      if node.type == :link && node.url.end_with?('.md') && !node.url.match?(%r{^(\w+:)?//})
+        node.url = node.url.sub(/\.md$/, '.html')
+      end
+    end
+    result.content = doc.to_html(flags: Markly::UNSAFE)
     result.headlines = extract_headlines(md)
 
     url = Pathname(path).relative_path_from(@src_dir).to_s

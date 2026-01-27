@@ -228,6 +228,63 @@ class TestPageDirectory < Minitest::Test
   end
 end
 
+class TestLinkRewriting < Minitest::Test
+  def setup
+    @tmpdir = Dir.mktmpdir
+    @src_dir = File.join(@tmpdir, 'src')
+    Dir.mkdir(@src_dir)
+    @gen = Gen.new(@src_dir, File.join(@tmpdir, 'public'))
+  end
+
+  def create_md_file(content)
+    path = File.join(@src_dir, 'test.md')
+    File.write(path, content)
+    path
+  end
+
+  def test_relative_link_converted
+    path = create_md_file("# Title\n[link](./other.md)")
+    page = @gen.parse_file(path)
+    assert_match(%r{href="./other.html"}, page.content)
+  end
+
+  def test_relative_link_without_dot_converted
+    path = create_md_file("# Title\n[link](other.md)")
+    page = @gen.parse_file(path)
+    assert_match(%r{href="other.html"}, page.content)
+  end
+
+  def test_parent_directory_link_converted
+    path = create_md_file("# Title\n[link](../other.md)")
+    page = @gen.parse_file(path)
+    assert_match(%r{href="../other.html"}, page.content)
+  end
+
+  def test_absolute_http_link_not_converted
+    path = create_md_file("# Title\n[link](http://example.com/file.md)")
+    page = @gen.parse_file(path)
+    assert_match(%r{href="http://example.com/file.md"}, page.content)
+  end
+
+  def test_absolute_https_link_not_converted
+    path = create_md_file("# Title\n[link](https://example.com/file.md)")
+    page = @gen.parse_file(path)
+    assert_match(%r{href="https://example.com/file.md"}, page.content)
+  end
+
+  def test_protocol_relative_link_not_converted
+    path = create_md_file("# Title\n[link](//example.com/file.md)")
+    page = @gen.parse_file(path)
+    assert_match(%r{href="//example.com/file.md"}, page.content)
+  end
+
+  def test_non_md_link_unchanged
+    path = create_md_file("# Title\n[link](./other.html)")
+    page = @gen.parse_file(path)
+    assert_match(%r{href="./other.html"}, page.content)
+  end
+end
+
 class TestExtractHeadlines < Minitest::Test
   def setup
     dir = Dir.mktmpdir
