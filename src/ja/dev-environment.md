@@ -18,6 +18,8 @@ CapsLock を `Ctrl_R` にして、そっち側に Unix っぽいショートカ�
 
 以前は Alt の場所を Cmd っぽい役割にしていたのだけど、これはどうしても漏れがでてしまって混乱するので、いまは止めている。ただ、最近 macOS 時間が増えた結果 (前職は仕事も Framework Laptop だった)、Cmd の気持ちで Alt を押していることがあるので、また挑戦するかもしれない。
 
+(2026-01-26: Alt を Cmd っぽい役割にするのは出来たので [xremap](xremap.md) に書いた)
+
 ## エディタ
 
 メインは Visual Studio Code で、以前は [Awesome Emacs Keymap](https://marketplace.visualstudio.com/items?itemName=tuttieee.emacs-mcx) を使っていたのだけど、最近はあきらめて標準キーバインディングでがんばっている。
