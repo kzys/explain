@@ -34,6 +34,10 @@ h1 .ja {
     font-weight: normal;
 }
 
+article h2 {
+    font-size: 1.2rem;
+}
+
 main {
     max-width: 50rem;
     margin: 0 auto;
@@ -132,7 +136,7 @@ table.pages th {
     display: flex;
     align-items: center;
     padding: 0 8px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: white;
     white-space: nowrap;
     min-width: fit-content;
@@ -146,7 +150,9 @@ table.pages th {
 }
 
 #index h2 {
-    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
     margin: 0;
     padding: 0;
 }
@@ -297,14 +303,13 @@ table.pages th {
 
 .directory-tag {
     display: inline-block;
-    padding: 0.15em 0.5em;
+    padding: 0 8px;
     border-radius: 4px;
-    font-size: 0.7em;
+    font-size: 0.8rem;
     font-weight: 600;
     color: white;
     background: #95a5a6;
     white-space: nowrap;
-    vertical-align: baseline;
     margin-right: 0.5em;
 }
 
