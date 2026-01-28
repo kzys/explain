@@ -221,16 +221,10 @@ table.pages th {
 }
 
 .language-ratio {
-    margin-bottom: 2rem;
-    padding: 1.5rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
     border: 1px solid #e0e0e0;
     border-radius: 4px;
-}
-
-.language-ratio h2 {
-    margin: 0 0 1rem 0;
-    font-size: 1.2rem;
-    color: #333;
 }
 
 .ratio-bars {
@@ -349,10 +343,6 @@ table.pages th {
 }
 
 @media (max-width: 480px) {
-    .language-ratio {
-        padding: 1rem;
-    }
-
     .ratio-bars {
         height: 35px;
     }
