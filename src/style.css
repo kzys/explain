@@ -5,7 +5,7 @@
 
 body {
     font-family: sans-serif;
-    margin: 0 1em;
+    margin: 0 1rem;
     color: #333;
     background: #fff;
     line-height: 1.6;
@@ -75,7 +75,7 @@ table {
     }
 
     header .ja {
-        margin-top: 0.5rem;
+        margin-top: 0.4rem;
     }
 
     h1 {
@@ -102,7 +102,7 @@ table.pages th {
 @media (max-width: 480px) {
     header {
         font-size: 1.2rem;
-        padding: 0.75rem 0;
+        padding: 0.8rem 0;
     }
 
     h1 {
@@ -110,7 +110,7 @@ table.pages th {
     }
 
     ul.pages li {
-        padding: 0.75rem 0;
+        padding: 0.8rem 0;
     }
 
     .pages thead {
@@ -173,7 +173,7 @@ table.pages th {
 #index .article-link::after {
     content: "›";
     position: absolute;
-    right: 0.5rem;
+    right: 0.4rem;
     top: 50%;
     transform: translateY(-50%);
     color: #999;
@@ -191,7 +191,7 @@ table.pages th {
 }
 
 .page-metadata {
-    margin: 0.25rem 0 0.75rem 0;
+    margin: 0.2rem 0 0.8rem 0;
     font-size: 0.8rem;
     color: #666;
     position: relative;
@@ -220,7 +220,7 @@ table.pages th {
 
 .page-metadata .changes-items li::before {
     content: '●';
-    margin-right: 0.5rem;
+    margin-right: 0.4rem;
     font-size: 1.2rem;
     line-height: 0;
     vertical-align: middle;
@@ -284,7 +284,7 @@ table.pages th {
 
 .lang-tag {
     display: inline-block;
-    padding: 0.1em 0.4em;
+    padding: 0.2rem 0.4rem;
     border-radius: 4px;
     font-size: 0.8rem;
     font-weight: 600;
@@ -310,12 +310,12 @@ table.pages th {
     color: white;
     background: #95a5a6;
     white-space: nowrap;
-    margin-right: 0.5em;
+    margin-right: 0.4rem;
 }
 
 .language-section {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
     border-bottom: 1px solid #e0e0e0;
 }
 
@@ -330,7 +330,7 @@ table.pages th {
     flex-wrap: wrap;
     gap: 0.5em;
     list-style: none;
-    margin: 0.5rem 0 0 0;
+    margin: 0.4rem 0 0 0;
     padding: 0;
     font-size: 0.8rem;
     line-height: 1.2;
@@ -339,7 +339,7 @@ table.pages th {
 
 .headlines li::before {
     content: "/";
-    margin-right: 0.25em;
+    margin-right: 0.2rem;
     color: #999;
 }
 
@@ -353,7 +353,7 @@ table.pages th {
     }
 
     .ratio-bar {
-        padding: 0 0.5rem;
+        padding: 0 0.4rem;
     }
 
     .lang-name {
