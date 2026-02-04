@@ -66,6 +66,12 @@ table {
     width: 100%;
 }
 
+iframe[src*="youtube"] {
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
     header {
