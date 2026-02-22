@@ -20,4 +20,4 @@
 
 ## Sen Morimoto
 
-Live on KEXP at Home (2021) で、[Washing Machine をカバーしていて](https://www.youtube.com/watch?v=Q8v44RuAaZE&t=732s)これも良い。
+新型コロナウィルスが流行ったころの "Live on KEXP *at Home*" (2021) で、["Washing Machine Heart" をカバーしていて](https://www.youtube.com/watch?v=Q8v44RuAaZE&t=732s)、これも良い。
