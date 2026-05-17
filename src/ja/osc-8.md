@@ -1,18 +1,20 @@
 # OSC 8 にいたる経緯
 
-Claude Code と Grafana を使って調べものをしていて「Explore ページへのリンクを」なんて頼むと、端末上なのに Web ブラウザのような、リンクの貼られた文字列を出してくることがある。この仕組みは「OSC 8 ハイパーリンク」などと呼ばれていて、端末によって対応状況にばらつきがある。私はこのために、重い腰を上げて macOS の Terminal.app から Ghostty に乗り換えた。
+Claude Code と Grafana を使って調べものをしていて「Explore ページへのリンクを」なんて頼むと、端末上なのに Web ブラウザのような、リンクの貼られた文字列を出してくることがある。この仕組みは「OSC 8 ハイパーリンク」などと呼ばれていて、結構あたらしく、端末によって対応状況にばらつきがある。たとえば macOS の Terminal.app は未だに対応していなくて、私はこのために、重い腰を上げて [Ghostty](https://ghostty.org/) に乗り換えた。
+
+そもそも OSC というのは何かの略なんだろうか。端末でリンクを貼るとか、わりと不思議な案だと思うのだけど、どこから来たのだろうか。いろいろと謎があったので調べてみた。
 
 ## Operating System Command
 
-OSC というのは Operating System Command の頭字語で、[EMCA-48](https://ecma-international.org/publications-and-standards/standards/ecma-48/) として1976年に策定されている。ECMAScript が [ECMA-262](https://ecma-international.org/publications-and-standards/standards/ecma-262/) であることを考えると、二桁というのは中々ふるい。あまりに古くて、第一版の仕様書はダウンロードできないし、第二版、第三版もだれかの手持ちの (しかもパンチ穴つきの) 資料をスキャンしたような PDF しかダウンロードできない。
+OSC というのは Operating System Command の頭字語で、[EMCA-48](https://ecma-international.org/publications-and-standards/standards/ecma-48/) (1976) のなかで定義されている。ECMAScript が [ECMA-262](https://ecma-international.org/publications-and-standards/standards/ecma-262/) であることを考えると、二桁は古い。あまりに古くて、第一版の仕様書はダウンロードできないし、第二版、第三版もだれかの手持ちの (しかもパンチ穴つきの) 資料をスキャンしたような PDF しかダウンロードできない。
 
-ECMA-48 は [ANSI X3.64](https://nvlpubs.nist.gov/nistpubs/Legacy/FIPS/fipspub86.pdf) (PDF) と同じもので、端末で文字に色をつけたり太字にしたりするエスケープシーケンスを、俗に「ANSI エスケープシーケンス」と呼ぶのはこれに由来している。
+ECMA-48 は [ANSI X3.64](https://nvlpubs.nist.gov/nistpubs/Legacy/FIPS/fipspub86.pdf) (1979?) と同じもので、端末で文字に色をつけたり太字にしたりするエスケープシーケンスを、俗に「ANSI エスケープシーケンス」と呼ぶのはこれに由来している。
 
-OSC が当時に何に使われていたかはよくわからなく、ANSI X3.64 では
+OSC はベンダーごとの拡張を置く場所というような定義で、
 
 > The interpretation of the conmand is subject to the particular operating system and is not, of itself, part of this standard.
 
-とされている。現存する資料だと [XTerm Control Sequences](https://invisible-island.net/xterm/ctlseqs/ctlseqs.html) は OSC 0 から OSC 6 までに色々な機能をわりあてていて、現代の端末エミュレータはこれを実装しているものが多い。
+実際にその後にどういうベンダーが何に使ったかはよくわからない。現存する資料だと [XTerm Control Sequences](https://invisible-island.net/xterm/ctlseqs/ctlseqs.html) くらいで、ここでは OSC 0 から OSC 6 までに色々な機能をわりあてていて、現代の端末エミュレータはこれを実装しているものが多い。
 
 OSC 7 は現在のディレクトリを伝えるための手段として [Apple が Terminal.app に実装したのが起源](https://github.com/fish-shell/fish-shell/issues/12031)だといわれている。
 
