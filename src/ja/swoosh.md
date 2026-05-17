@@ -15,3 +15,5 @@
 - [So swooshable she be!](https://www.reddit.com/r/transformers/comments/18pmoa5/so_swooshable_she_be/) (r/transformers, 2023)
 
 日本だと、[手のひらで広がるめくるめく想像の世界！　大人の「ブンドド」講座（前編）](https://game.watch.impress.co.jp/docs/kikaku/1237439.html) (2020) にある「ブンドド」が近いような意味をもっている。
+
+"swoosh" が飛ぶことに「ブンドド」が戦うことに近いところから、お互いは独立して定義された (輸入/輸出されていない) 言葉だと思う。同じようなことをしている界隈が、同じような行為に別々の名前をつけているのは、言葉の発生過程をみるようで、ちょっと面白い。
