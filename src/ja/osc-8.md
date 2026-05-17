@@ -4,15 +4,17 @@ Claude Code と Grafana を使って調べものをしていて「Explore ペー
 
 ## Operating System Command
 
-OSC というのは Operating System Command の頭字語で、EMCA-48 として1976年に策定されている。ECMA-48 は [ANSI X3.64](https://nvlpubs.nist.gov/nistpubs/Legacy/FIPS/fipspub86.pdf) (PDF) と大体おなじもので、端末で文字に色をつけたり太字にしたりするエスケープシーケンスを、俗に「ANSI エスケープシーケンス」と呼ぶのはこれに由来している。
+OSC というのは Operating System Command の頭字語で、[EMCA-48](https://ecma-international.org/publications-and-standards/standards/ecma-48/) として1976年に策定されている。ECMAScript が [ECMA-262](https://ecma-international.org/publications-and-standards/standards/ecma-262/) であることを考えると、二桁というのは中々ふるい。あまりに古くて、第一版の仕様書はダウンロードできないし、第二版、第三版もだれかの手持ちの (しかもパンチ穴つきの) 資料をスキャンしたような PDF しかダウンロードできない。
 
-OSC が当時実際に何に使われていたかはよくわからなく、ANSI X3.64 では
+ECMA-48 は [ANSI X3.64](https://nvlpubs.nist.gov/nistpubs/Legacy/FIPS/fipspub86.pdf) (PDF) と同じもので、端末で文字に色をつけたり太字にしたりするエスケープシーケンスを、俗に「ANSI エスケープシーケンス」と呼ぶのはこれに由来している。
+
+OSC が当時に何に使われていたかはよくわからなく、ANSI X3.64 では
 
 > The interpretation of the conmand is subject to the particular operating system and is not, of itself, part of this standard.
 
 とされている。現存する資料だと [XTerm Control Sequences](https://invisible-island.net/xterm/ctlseqs/ctlseqs.html) は OSC 0 から OSC 6 までに色々な機能をわりあてていて、現代の端末エミュレータはこれを実装しているものが多い。
 
-OSC 7 は現在のディレクトリを伝えるための手段として [Apple が Terminal.app に実装したのが起源](https://github.com/fish-shell/fish-shell/issues/12031)だといわれている。Apple はさらに xterm の OSC 6 である "Enable/disable Special Color Number c" を無視して、これを現在のファイルを伝える手段として使っている。
+OSC 7 は現在のディレクトリを伝えるための手段として [Apple が Terminal.app に実装したのが起源](https://github.com/fish-shell/fish-shell/issues/12031)だといわれている。
 
 ## OSC 8
 
