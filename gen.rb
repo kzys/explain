@@ -4,6 +4,7 @@ require 'pathname'
 require 'erb'
 require 'yaml'
 require 'open3'
+require 'set'
 require 'time'
 require 'yaml'
 require 'digest'
@@ -98,6 +99,9 @@ class Gen
     stdin, stdout, stderr, wait_thr = Open3.popen3('git', 'log', '--name-only', "--format=format:\t%aI")
     stdin.close
     @file_to_time = parse_git_log(stdout.read)
+
+    rename_out, = Open3.capture2('git', 'log', '--diff-filter=R', '--name-status', '--format=')
+    @renames = parse_git_renames(rename_out)
   end
 
   def parse_git_log(out)
@@ -112,6 +116,29 @@ class Gen
     end
 
     ret
+  end
+
+  def parse_git_renames(out)
+    renames = {}
+    out.each_line do |line|
+      line.chomp!
+      next if line.empty?
+      if line =~ /^R\d+\t(.+)\t(.+)$/
+        renames[$1] = $2
+      end
+    end
+    renames.each_key do |old|
+      cur = old
+      seen = Set.new([cur])
+      while renames.key?(cur)
+        nxt = renames[cur]
+        break if seen.include?(nxt)
+        seen << nxt
+        cur = nxt
+      end
+      renames[old] = cur
+    end
+    renames
   end
 
   def parse_file(path)
@@ -293,6 +320,40 @@ class Gen
           f.write(ERB.new(path.read).result(binding))
         end
       end
+    end
+
+    generate_redirects(@renames, files_to_process)
+  end
+
+  def generate_redirects(renames, existing_src_paths)
+    existing_set = existing_src_paths.map(&:to_s).to_set
+    renames.each do |old_src, new_src|
+      next unless old_src.end_with?('.md')
+      next if existing_set.include?(old_src)
+      next unless existing_set.include?(new_src)
+
+      old_url = Pathname(old_src).relative_path_from(@src_dir).to_s.sub(/\.md$/, '.html')
+      new_url = Pathname(new_src).relative_path_from(@src_dir).to_s.sub(/\.md$/, '.html')
+      dest_abs = '/' + new_url
+
+      html = <<~HTML
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <meta charset="utf-8">
+        <title>Redirecting...</title>
+        <link rel="canonical" href="#{dest_abs}">
+        <meta http-equiv="refresh" content="0;url=#{dest_abs}">
+        </head>
+        <body>
+        <p>Moved to <a href="#{dest_abs}">#{dest_abs}</a>.</p>
+        </body>
+        </html>
+      HTML
+
+      out_path = @dest_dir + old_url
+      out_path.dirname.mkpath unless out_path.dirname.exist?
+      File.write(out_path, html)
     end
   end
 

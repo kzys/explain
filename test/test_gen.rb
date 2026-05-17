@@ -285,6 +285,111 @@ class TestLinkRewriting < Minitest::Test
   end
 end
 
+class TestParseGitRenames < Minitest::Test
+  def setup
+    dir = Dir.mktmpdir
+    @gen = Gen.new(Pathname('testdata/src'), dir)
+  end
+
+  def test_simple_rename
+    out = "R100\tsrc/ja/customers.md\tsrc/ja/customer.md\n"
+    renames = @gen.parse_git_renames(out)
+    assert_equal('src/ja/customer.md', renames['src/ja/customers.md'])
+  end
+
+  def test_transitive_rename
+    out = "R100\tsrc/ja/b.md\tsrc/ja/c.md\nR100\tsrc/ja/a.md\tsrc/ja/b.md\n"
+    renames = @gen.parse_git_renames(out)
+    assert_equal('src/ja/c.md', renames['src/ja/a.md'])
+    assert_equal('src/ja/c.md', renames['src/ja/b.md'])
+  end
+
+  def test_empty_output
+    renames = @gen.parse_git_renames('')
+    assert_equal({}, renames)
+  end
+
+  def test_blank_lines_ignored
+    out = "\nR100\tsrc/ja/customers.md\tsrc/ja/customer.md\n\n"
+    renames = @gen.parse_git_renames(out)
+    assert_equal(1, renames.size)
+    assert_equal('src/ja/customer.md', renames['src/ja/customers.md'])
+  end
+end
+
+class TestGenerateRedirects < Minitest::Test
+  def setup
+    @tmpdir = Dir.mktmpdir
+    @src_dir = Pathname(@tmpdir) + 'src'
+    @dest_dir = Pathname(@tmpdir) + 'public'
+    @src_dir.mkpath
+    @dest_dir.mkpath
+    @gen = Gen.new(@src_dir, @dest_dir)
+  end
+
+  def create_src(name)
+    path = @src_dir + name
+    path.dirname.mkpath
+    path.write("# Title\nhello")
+    path
+  end
+
+  def test_generates_redirect_html
+    new_path = create_src('customer.md')
+    old_str = (@src_dir + 'customers.md').to_s
+
+    @gen.generate_redirects({ old_str => new_path.to_s }, [new_path])
+
+    assert File.exist?(@dest_dir + 'customers.html')
+    content = File.read(@dest_dir + 'customers.html')
+    assert_match(/<meta http-equiv="refresh"/, content)
+    assert_match(/<link rel="canonical"/, content)
+  end
+
+  def test_redirect_points_to_correct_url
+    new_path = create_src('customer.md')
+    old_str = (@src_dir + 'customers.md').to_s
+
+    @gen.generate_redirects({ old_str => new_path.to_s }, [new_path])
+
+    content = File.read(@dest_dir + 'customers.html')
+    assert_match(%r{/customer\.html}, content)
+  end
+
+  def test_no_redirect_when_old_file_still_exists
+    old_path = create_src('customers.md')
+    new_path = create_src('customer.md')
+
+    @gen.generate_redirects(
+      { old_path.to_s => new_path.to_s },
+      [old_path, new_path]
+    )
+
+    refute File.exist?(@dest_dir + 'customers.html')
+  end
+
+  def test_no_redirect_when_destination_missing
+    old_str = (@src_dir + 'old.md').to_s
+    new_str = (@src_dir + 'new.md').to_s
+
+    @gen.generate_redirects({ old_str => new_str }, [])
+
+    refute File.exist?(@dest_dir + 'old.html')
+  end
+
+  def test_subdirectory_redirect
+    new_path = create_src('music/new.md')
+    old_str = (@src_dir + 'music/old.md').to_s
+
+    @gen.generate_redirects({ old_str => new_path.to_s }, [new_path])
+
+    redirect = @dest_dir + 'music/old.html'
+    assert File.exist?(redirect)
+    content = File.read(redirect)
+    assert_match(%r{/music/new\.html}, content)
+  end
+end
+
 class TestExtractHeadlines < Minitest::Test
   def setup
     dir = Dir.mktmpdir
