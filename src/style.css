@@ -15,6 +15,13 @@ a {
     color: #000;
 }
 
+a:hover,
+a:visited:hover {
+    background: #000;
+    color: #fff;
+    text-decoration: none;
+}
+
 a:visited {
     color: #666;
 }
@@ -22,11 +29,12 @@ header {
     display: flex;
     justify-content: space-between;
     font-size: 1.5rem;
-    border-bottom: 2px solid #000;
+    border-bottom: 1px solid #000;
     padding: 1rem 0;
     margin-bottom: 1rem;
 }
-header a {
+header a,
+header a:visited {
     color: #000;
     text-decoration: none;
 }
@@ -69,7 +77,7 @@ footer {
     margin: 1rem auto;
 
     font-size: 0.8rem;
-    border-top: 2px solid #000;
+    border-top: 1px solid #000;
     padding: 1rem 0;
     color: #666;
 }
@@ -163,7 +171,7 @@ table.pages th {
 
 #index article {
     margin-bottom: 1rem;
-    padding: 1rem;
+    padding: 0;
     border: 1px solid #000;
     border-radius: 0;
 }
@@ -186,6 +194,7 @@ table.pages th {
     text-decoration: none !important;
     color: inherit;
     position: relative;
+    padding: 1rem;
     padding-right: 2rem;
 }
 
@@ -203,6 +212,14 @@ table.pages th {
 #index .article-link:active,
 #index .article-link:focus {
     text-decoration: none !important;
+    background: none;
+    color: inherit;
+}
+
+#index article:has(.article-link:hover),
+#index article:has(.article-link:active),
+#index article:has(.article-link:focus) {
+    background: #f5f5f5;
 }
 
 #index .article-link h2 {
