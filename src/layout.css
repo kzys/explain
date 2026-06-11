@@ -6,14 +6,6 @@ body {
     line-height: 1.5;
 }
 
-a {
-    color: #30f;
-}
-
-a:visited {
-    color: #90f;
-}
-
 h1 {
     font-size: 2rem;
     font-weight: normal;
@@ -25,11 +17,6 @@ h2 {
     font-weight: normal;
     justify-content: space-between;
 }
-
-.ja {
-    color: #f90;
-}
-
 
 small.sidenote {
     display: block;
