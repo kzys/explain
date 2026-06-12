@@ -286,12 +286,7 @@ table.pages th {
     align-items: center;
     justify-content: center;
     padding: 0 1rem;
-    transition: all 0.3s ease;
     min-width: fit-content;
-}
-
-.ratio-bar:hover {
-    opacity: 0.8;
 }
 
 .ja-bar {
