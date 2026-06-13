@@ -1,6 +1,8 @@
 # Mitski
 
-Mitski は日系アメリカ人のシンガーソングライター。かっこいい。
+Mitski は日系アメリカ人のシンガーソングライター。
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/qooWnw5rEcI?si=HgUplhj8mCrmHM2f" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 椎名林檎
 
@@ -33,7 +35,7 @@ Model Minorities, and Fascist Takeovers](https://www.interviewmagazine.com/cultu
 >
 > HARRISON: I love Sheena Ringo. That’s what I was going to say, the show with Tokyo Jihen. It’s so Alexander McQueen “Highland Rape.” It’s so ornate, and she’s wearing those big antlers that are wrapped in the fabric. I don’t feel like I’m a standup, but I aspire to do a standup show where the presentation is unnecessarily ornate and there’s like, an H.R. Giger thing going on on stage, but the content is brain-liquifyingly banal and boring and like, all about Tinder.
 
-Patti Harrison はアメリカの俳優でコメディアン。みんな椎名林檎みすぎではないか。
+Patti Harrison はアメリカの俳優でコメディアン。みんな椎名林檎をちゃんと見すぎではないか。
 
 [インディシーンの女王：ミツキの緊迫と葛藤――最新作『ナッシングス・アバウト・トゥ・ハプン・トゥ・ミー』の背景、影響、そして知られざる胸の内を明かす最新インタビュー](https://rockinon.com/blog/yogaku/214563) (2026)
 
