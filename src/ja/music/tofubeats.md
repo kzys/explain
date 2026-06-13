@@ -6,4 +6,4 @@
 
 制作の背景については、[細金卓矢と杉山峻輔、tofubeats「No.1 feat.G.RINA」がいかに作られたかを語る](https://www.cbc-net.com/topic/2013/07/tofubeats-no-1-hsgn-sskhybrid/) (2013) が詳しい。
 
-2026年だと[生活コア](https://enden-kpc.hatenablog.com/entry/seikatsu-core)と呼ばれてしまうのかもしれない。
+もちろん、[水星 feat.オノマトペ大臣](https://www.youtube.com/watch?v=NOjmN-ZHlBQ)も好きだけれど、MV は [DAOKO のカバー](https://www.youtube.com/watch?v=Y3xehyYXbJw)が終電感があって好き。
