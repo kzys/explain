@@ -102,6 +102,9 @@ class Gen
 
     rename_out, = Open3.capture2('git', 'log', '--diff-filter=R', '--name-status', '--format=')
     @renames = parse_git_renames(rename_out)
+
+    status_out, = Open3.capture2('git', 'status', '--porcelain')
+    @dirty_files = status_out.lines.map { |l| l[3..].chomp }.to_set
   end
 
   def parse_git_log(out)
@@ -187,8 +190,10 @@ class Gen
     if times = @file_to_time[path_str]
       result.changes = times
     else
-      # If not in git, use file system times
       result.changes = [File.mtime(path)]
+    end
+    if @dirty_files.include?(path_str)
+      result.changes = [File.mtime(path)] + result.changes
     end
     result.size = File.size(path)
 
