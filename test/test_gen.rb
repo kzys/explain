@@ -107,7 +107,6 @@ class TestPageLanguageMethods < Minitest::Test
     assert_equal(true, page.ja?)
     assert_equal(false, page.en?)
     assert_equal('日本語', page.language_name)
-    assert_equal('lang-ja', page.language_class)
     assert_equal('ja-bar', page.bar_class)
   end
 
@@ -120,7 +119,6 @@ class TestPageLanguageMethods < Minitest::Test
     assert_equal(false, page.ja?)
     assert_equal(true, page.en?)
     assert_equal('English', page.language_name)
-    assert_equal('lang-en', page.language_class)
     assert_equal('en-bar', page.bar_class)
   end
 end
@@ -390,21 +388,28 @@ class TestGenerateRedirects < Minitest::Test
   end
 end
 
-class TestExtractHeadlines < Minitest::Test
+class TestHeadlines < Minitest::Test
   def setup
-    dir = Dir.mktmpdir
-    @gen = Gen.new(Pathname('testdata/src'), dir)
+    @tmpdir = Dir.mktmpdir
+    @src_dir = File.join(@tmpdir, 'src')
+    Dir.mkdir(@src_dir)
+    @gen = Gen.new(@src_dir, File.join(@tmpdir, 'public'))
   end
 
-  def test_single_headline
-    md = "# Hello World"
-    headlines = @gen.extract_headlines(md)
-    assert_equal(1, headlines.length)
-    assert_equal({ level: 1, text: "Hello World" }, headlines[0])
+  def parse(md)
+    path = File.join(@src_dir, 'test.md')
+    File.write(path, md)
+    @gen.parse_file(path)
+  end
+
+  def test_first_h1_becomes_title_not_headline
+    page = parse("# Hello World")
+    assert_equal('Hello World', page.title)
+    assert_equal([], page.headlines)
   end
 
   def test_multiple_headlines
-    md = <<~MD
+    page = parse(<<~MD)
       # Main Title
       Some content here.
       ## Section One
@@ -412,55 +417,50 @@ class TestExtractHeadlines < Minitest::Test
       ### Subsection
       ## Section Two
     MD
-    headlines = @gen.extract_headlines(md)
-    assert_equal(4, headlines.length)
-    assert_equal({ level: 1, text: "Main Title" }, headlines[0])
-    assert_equal({ level: 2, text: "Section One" }, headlines[1])
-    assert_equal({ level: 3, text: "Subsection" }, headlines[2])
-    assert_equal({ level: 2, text: "Section Two" }, headlines[3])
+    assert_equal('Main Title', page.title)
+    assert_equal([
+      { level: 2, text: 'Section One' },
+      { level: 3, text: 'Subsection' },
+      { level: 2, text: 'Section Two' },
+    ], page.headlines)
   end
 
   def test_headline_with_bold
-    md = "## Section **with bold**"
-    headlines = @gen.extract_headlines(md)
-    assert_equal(1, headlines.length)
-    assert_equal({ level: 2, text: "Section with bold" }, headlines[0])
+    page = parse("## Section **with bold**")
+    assert_equal([{ level: 2, text: 'Section with bold' }], page.headlines)
   end
 
   def test_headline_with_italic
-    md = "## Section *with italic*"
-    headlines = @gen.extract_headlines(md)
-    assert_equal(1, headlines.length)
-    assert_equal({ level: 2, text: "Section with italic" }, headlines[0])
+    page = parse("## Section *with italic*")
+    assert_equal([{ level: 2, text: 'Section with italic' }], page.headlines)
   end
 
   def test_headline_with_link
-    md = "## Section [with link](http://example.com)"
-    headlines = @gen.extract_headlines(md)
-    assert_equal(1, headlines.length)
-    assert_equal({ level: 2, text: "Section with link" }, headlines[0])
+    page = parse("## Section [with link](http://example.com)")
+    assert_equal([{ level: 2, text: 'Section with link' }], page.headlines)
   end
 
   def test_no_headlines
-    md = "Just some plain text\nwithout any headlines."
-    headlines = @gen.extract_headlines(md)
-    assert_equal(0, headlines.length)
+    page = parse("Just some plain text\nwithout any headlines.")
+    assert_equal([], page.headlines)
   end
 
   def test_all_heading_levels
-    md = <<~MD
-      # H1
-      ## H2
-      ### H3
-      #### H4
-      ##### H5
-      ###### H6
-    MD
-    headlines = @gen.extract_headlines(md)
-    assert_equal(6, headlines.length)
-    (1..6).each do |level|
-      assert_equal(level, headlines[level - 1][:level])
-      assert_equal("H#{level}", headlines[level - 1][:text])
-    end
+    page = parse((1..6).map { |level| "#{'#' * level} H#{level}" }.join("\n"))
+    assert_equal('H1', page.title)
+    assert_equal((2..6).map { |level| { level: level, text: "H#{level}" } }, page.headlines)
+  end
+
+  def test_second_h1_stays_as_headline
+    page = parse("# Title\n# Another")
+    assert_equal('Title', page.title)
+    assert_equal([{ level: 1, text: 'Another' }], page.headlines)
+  end
+
+  def test_h1_inside_code_block_is_left_alone
+    page = parse("---\ntitle: front\n---\n```\n# comment\n```")
+    assert_equal('front', page.title)
+    assert_match(/# comment/, page.content)
+    assert_equal([], page.headlines)
   end
 end
