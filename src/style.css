@@ -57,6 +57,10 @@ article h2 {
     font-size: 1.2rem;
 }
 
+pre {
+    overflow-x: auto;
+}
+
 main {
     max-width: 50rem;
     margin: 0 auto;
