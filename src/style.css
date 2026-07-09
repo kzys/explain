@@ -58,7 +58,8 @@ article h2 {
 }
 
 pre {
-    overflow-x: auto;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
 }
 
 main {
