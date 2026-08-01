@@ -1,6 +1,6 @@
 # I broke my wrist
 
-In July 2026, I broke my right wrist, had surgery and got a plate in the wrist.
+In July 2026, I broke my right wrist, had surgery and got [a plate](https://trimedortho.com/portfolio-items/volar-bearing-plate/) in the wrist.
 
 ## 07/09
 
