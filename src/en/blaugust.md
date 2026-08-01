@@ -1,6 +1,6 @@
 # Blaugust
 
-[Blaugst](https://www.containsmoderateperil.com/blog/2026/7/14/blaugust-2026-q-ampa) is a month-long blogging event:
+[Blaugust](https://www.containsmoderateperil.com/blog/2026/7/14/blaugust-2026-q-ampa) is a month-long blogging event:
 
 > It’s month long event to encourage new bloggers and content creators, as well as those who’ve drifted away from existing blogs who are looking for the motivation to resume writing.
 
