@@ -1,10 +1,11 @@
 # Baseten
 
-I have been working for [Baseten](https://www.baseten.co/) since October 2025. The headquarters is in San Francisco and I went there for a week at the start. Now I work from Seattle remotely.
+I have been working for [Baseten](https://www.baseten.co/) since October 2025. The headquarters is in San Francisco and I went there for a week at the start. Now I work remotely from Seattle.
 
 Baseten is one of the "model serving" startups. For example, Zed's edit prediction is powered by [Zeta](https://huggingface.co/zed-industries/zeta) and runs on [Baseten Inference Stack](https://www.baseten.co/resources/customers/zed-industries-serves-2x-faster-code-completions-with-baseten/).
 
-## Funding
+## Funding announcements during my time
 
-* [Announcing Baseten’s $150M Series D](https://www.baseten.co/blog/announcing-baseten-150m-series-d/) (2025)
+* [Announcing Baseten's $150M Series D](https://www.baseten.co/blog/announcing-baseten-150m-series-d/) (2025)
 * [Announcing Baseten's $300M Series E](https://www.baseten.co/blog/announcing-baseten-s-300m-series-e/) (2026)
+* [Announcing our Series F](https://www.baseten.co/blog/announcing-our-series-f/) (2026)
