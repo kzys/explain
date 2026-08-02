@@ -156,6 +156,14 @@ END
   def test_run
     @gen.run
   end
+
+  def test_include_does_not_clobber_surrounding_output
+    gen = @gen
+    template = ERB.new("before<%= gen.include('footer.html.erb', binding) %>after")
+    result = template.result(binding)
+    assert_includes(result, 'before')
+    assert_includes(result, 'after')
+  end
 end
 
 class TestMarkdownParsing < Minitest::Test

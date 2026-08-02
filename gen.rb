@@ -146,7 +146,8 @@ class Gen
   end
 
   def include(path, b = binding)
-    ERB.new(Pathname('view').join(path).read).result(b)
+    eoutvar = "_erbout_#{path.gsub(/\W/, '_')}"
+    ERB.new(Pathname('view').join(path).read, trim_mode: nil, eoutvar: eoutvar).result(b)
   end
 
   def site_root(page)
