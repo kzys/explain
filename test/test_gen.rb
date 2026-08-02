@@ -156,13 +156,33 @@ END
   def test_run
     @gen.run
   end
+end
+
+class TestGenInclude < Minitest::Test
+  def setup
+    view_dir = Dir.mktmpdir
+    File.write(File.join(view_dir, 'partial.html.erb'),
+               "<% if defined?(name) %>partial:<%= name %><% else %>partial:none<% end %>")
+    @gen = Gen.new(Pathname('testdata/src'), Dir.mktmpdir, view_dir: view_dir)
+  end
 
   def test_include_does_not_clobber_surrounding_output
     gen = @gen
-    template = ERB.new("before<%= gen.include('footer.html.erb', binding) %>after")
+    template = ERB.new("before<%= gen.include('partial.html.erb') %>after")
     result = template.result(binding)
     assert_includes(result, 'before')
     assert_includes(result, 'after')
+  end
+
+  def test_include_passes_explicit_locals_to_partial
+    assert_equal('partial:hello', @gen.include('partial.html.erb', name: 'hello'))
+  end
+
+  def test_include_does_not_leak_caller_locals_into_partial
+    name = 'leaked' # not passed to include
+    result = @gen.include('partial.html.erb')
+    assert_equal('partial:none', result)
+    assert_equal('leaked', name) # local is untouched by the include call
   end
 end
 

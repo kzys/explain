@@ -57,9 +57,10 @@ end
 class Gen
   CACHEBUST_EXTS = %w[.css .js .ico .svg .woff .woff2 .ttf .eot]
 
-  def initialize(src_dir, dest_dir, config = {})
+  def initialize(src_dir, dest_dir, config = {}, view_dir: 'view')
     @src_dir = Pathname(src_dir)
     @dest_dir = Pathname(dest_dir)
+    @view_dir = Pathname(view_dir)
     @config = config
     @asset_hashes = {}
 
@@ -145,9 +146,10 @@ class Gen
     text
   end
 
-  def include(path, b = binding)
-    eoutvar = "_erbout_#{path.gsub(/\W/, '_')}"
-    ERB.new(Pathname('view').join(path).read, trim_mode: nil, eoutvar: eoutvar).result(b)
+  def include(path, locals = {})
+    b = binding
+    locals.each { |name, value| b.local_variable_set(name, value) }
+    ERB.new(@view_dir.join(path).read, trim_mode: nil).result(b)
   end
 
   def site_root(page)
