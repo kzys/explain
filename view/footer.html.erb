@@ -1,5 +1,18 @@
 <footer>
-  <p>
-    加藤和良 - 日本生まれ、シアトル在住のプログラマです。スタートアップではたらいています。
-  </p>
+  <% has_page = defined?(page) && page %>
+  <% show_ja = !has_page || page.ja? %>
+  <% show_en = !has_page || page.en? %>
+  <% if show_en %>
+    <p>
+      Kazuyoshi Kato -
+      I'm a Japanese software developer in Seattle.
+      I work for Baseten, an AI infrastructure startup.
+    </p>
+  <% end %>
+  <% if show_ja %>
+    <p>
+      加藤和良 -
+      日本生まれ、シアトル在住のプログラマです。Baseten というスタートアップではたらいています。
+    </p>
+  <% end %>
 </footer>

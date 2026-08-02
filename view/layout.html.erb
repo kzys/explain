@@ -8,7 +8,7 @@
         <title><%= page.title %></title>
     </head>
     <body>
-      <%= include 'header.html.erb' %>
+      <%= include 'header.html.erb', binding %>
       <main>
         <h1><%= page.title %></h1>
         <% if page.changes && page.changes.length > 0 %>
@@ -25,6 +25,6 @@
         <% end %>
         <%= page.content %>
       </main>
-      <%= include 'footer.html.erb' %>
+      <%= include 'footer.html.erb', binding %>
     </body>
 </html>

@@ -145,8 +145,8 @@ class Gen
     text
   end
 
-  def include(path)
-    ERB.new(Pathname('view').join(path).read).result(binding)
+  def include(path, b = binding)
+    ERB.new(Pathname('view').join(path).read).result(b)
   end
 
   def site_root(page)
