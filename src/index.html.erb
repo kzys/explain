@@ -20,8 +20,8 @@
 
       <div class="language-ratio">
         <div class="ratio-summary">
-          <span class="lang-tag lang-ja">日本語: <%= latest_ratio.ja_count %> posts (<%= latest_ratio.ja_percent %>%)</span>
           <span class="lang-tag lang-en">English: <%= latest_ratio.en_count %> posts (<%= latest_ratio.en_percent %>%)</span>
+          <span class="lang-tag lang-ja">日本語: <%= latest_ratio.ja_count %> posts (<%= latest_ratio.ja_percent %>%)</span>
         </div>
         <% if ratio_chart %>
           <svg class="ratio-trend" viewBox="0 0 <%= ratio_chart[:width] %> <%= ratio_chart[:height] %>" preserveAspectRatio="none" role="img" aria-label="Share of English vs. Japanese posts, <%= ratio_series.first.date.strftime('%Y-%m') %> to today, ending at <%= latest_ratio.en_percent %>% English">

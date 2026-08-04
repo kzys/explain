@@ -1,6 +1,8 @@
 :root {
     --timeline-rotation: -20deg;
     --timeline-text-width: 12em;
+    --lang-ja-color: #6d28d9;
+    --lang-en-color: #b45309;
 }
 
 body {
@@ -164,7 +166,6 @@ table.pages th {
 .bar {
     height: 24px;
     border-radius: 0;
-    border: 1px solid #000;
     display: flex;
     align-items: center;
     padding: 0 8px;
@@ -277,11 +278,11 @@ table.pages th {
 /* Shared with the per-post size bar (.bar.ja-bar / .bar.en-bar in .meta),
    not just the language-ratio summary tags. */
 .ja-bar {
-    background: #000;
+    background: var(--lang-ja-color);
 }
 
 .en-bar {
-    background: #666;
+    background: var(--lang-en-color);
 }
 
 .ratio-summary {
@@ -296,16 +297,15 @@ table.pages th {
     display: block;
     width: 100%;
     height: 48px;
-    border: 1px solid #000;
     border-radius: 0;
 }
 
 .ratio-area-ja {
-    fill: #000;
+    fill: var(--lang-ja-color);
 }
 
 .ratio-area-en {
-    fill: #666;
+    fill: var(--lang-en-color);
 }
 
 .ratio-trend-labels {
@@ -326,11 +326,11 @@ table.pages th {
 }
 
 .lang-tag.lang-ja {
-    color: #000;
+    color: var(--lang-ja-color);
 }
 
 .lang-tag.lang-en {
-    color: #666;
+    color: var(--lang-en-color);
 }
 
 .directory-tag {
