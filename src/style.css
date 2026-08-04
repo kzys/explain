@@ -401,16 +401,41 @@ table.pages th {
     margin-right: 0;
 }
 
+/* A bilingual pair is one post written twice, so it has to read as a pair.
+   Two cues do that: the halves sit closer to each other than to neighbouring
+   posts, and a short rail runs down the bleed margin beside them. The rail is
+   inset top and bottom so it reads as a bracket rather than a border. */
 .language-section {
-    margin-bottom: var(--sp-4);
-    padding-bottom: var(--sp-4);
-    border-bottom: 1px solid var(--rule);
-}
-
-.language-section:last-child {
     margin-bottom: 0;
     padding-bottom: 0;
     border-bottom: none;
+}
+
+#index article:has(.language-section) {
+    position: relative;
+}
+
+#index article:has(.language-section)::before {
+    content: "";
+    position: absolute;
+    left: calc(var(--sp-3) * -1);
+    top: var(--sp-6);
+    bottom: var(--sp-6);
+    width: 2px;
+    background: var(--tick);
+}
+
+#index .language-section .article-link {
+    padding-top: var(--sp-2);
+    padding-bottom: var(--sp-2);
+}
+
+#index .language-section:first-child .article-link {
+    padding-top: var(--sp-4);
+}
+
+#index .language-section:last-child .article-link {
+    padding-bottom: var(--sp-4);
 }
 
 /* A post's own section headings, shown as a table of contents. Separated by
