@@ -6,11 +6,36 @@ require 'yaml'
 require 'open3'
 require 'set'
 require 'time'
+require 'date'
 require 'digest'
 
 module SizeFormatter
   def self.human_size(size)
     size < 1024 ? "#{size} bytes" : "#{(size / 1024.0).round(1)} KiB"
+  end
+end
+
+# A point-in-time snapshot of how many English vs. Japanese posts existed in
+# the repo, used to chart the language ratio over time.
+LanguageSnapshot = Struct.new(:date, :en_count, :ja_count) do
+  def total_count
+    en_count + ja_count
+  end
+
+  def ja_share
+    total_count.zero? ? 0.0 : ja_count.to_f / total_count
+  end
+
+  def en_share
+    1.0 - ja_share
+  end
+
+  def ja_percent
+    (ja_share * 100).round(1)
+  end
+
+  def en_percent
+    (en_share * 100).round(1)
   end
 end
 
@@ -72,6 +97,12 @@ class Gen
 
     status_out, = Open3.capture2('git', 'status', '--porcelain')
     @dirty_files = status_out.lines.map { |l| l[3..].chomp }.to_set
+
+    language_log_out, = Open3.capture2(
+      'git', 'log', '--reverse', '--name-status', '--format=format:%x00%H%x00%aI',
+      '--', 'src/en', 'src/ja'
+    )
+    @language_history = build_language_history(parse_language_log(language_log_out))
   end
 
   def parse_git_log(out)
@@ -93,6 +124,111 @@ class Gen
       renames[old] = cur
     end
     renames
+  end
+
+  # Parses `git log --name-status --format=format:%x00%H%x00%aI` output into
+  # [{ sha:, date:, changes: [[status, path] or [status, old_path, new_path], ...] }, ...],
+  # oldest first.
+  def parse_language_log(out)
+    parts = out.split("\x00")
+    parts.shift # leading "" before the first NUL
+    commits = []
+    parts.each_slice(2) do |sha, rest|
+      lines = rest.split("\n")
+      date = Time.parse(lines.shift)
+      changes = lines.reject(&:empty?).map { |line| line.split("\t") }
+      commits << { sha: sha, date: date, changes: changes }
+    end
+    commits
+  end
+
+  def language_for(path)
+    return :ja if path.start_with?('src/ja/')
+    return :en if path.start_with?('src/en/')
+
+    nil
+  end
+
+  # Replays commit history to build a running count of English/Japanese posts,
+  # taking one snapshot per commit that changes the count, collapsed to one
+  # (the latest) snapshot per calendar day. Edits (status M) don't change the
+  # count and are ignored; renames only move the count when they cross
+  # src/en <-> src/ja.
+  def build_language_history(commits)
+    file_lang = {}
+    en_count = 0
+    ja_count = 0
+    by_date = {}
+
+    commits.each do |commit|
+      touched = false
+
+      commit[:changes].each do |status, path, new_path|
+        case status[0]
+        when 'A'
+          next unless path.end_with?('.md')
+
+          lang = language_for(path)
+          file_lang[path] = lang
+          en_count += 1 if lang == :en
+          ja_count += 1 if lang == :ja
+          touched = true
+        when 'D'
+          next unless path.end_with?('.md')
+
+          lang = file_lang.delete(path)
+          en_count -= 1 if lang == :en
+          ja_count -= 1 if lang == :ja
+          touched = true
+        when 'R'
+          next unless path.end_with?('.md') && new_path.end_with?('.md')
+
+          old_lang = file_lang.delete(path)
+          new_lang = language_for(new_path)
+          file_lang[new_path] = new_lang
+          next if old_lang == new_lang
+
+          en_count -= 1 if old_lang == :en
+          ja_count -= 1 if old_lang == :ja
+          en_count += 1 if new_lang == :en
+          ja_count += 1 if new_lang == :ja
+          touched = true
+        end
+      end
+
+      by_date[commit[:date].to_date] = LanguageSnapshot.new(commit[:date].to_date, en_count, ja_count) if touched
+    end
+
+    by_date.values.sort_by(&:date)
+  end
+
+  # The historical series with today's live (possibly-uncommitted) counts as
+  # the final point, so the chart's right edge always matches what the page shows.
+  def language_ratio_series(current_en_count, current_ja_count)
+    today = Date.today
+    series = @language_history.reject { |snap| snap.date == today }
+    series + [LanguageSnapshot.new(today, current_en_count, current_ja_count)]
+  end
+
+  # SVG path data for a 100%-stacked area chart of `series`: a Japanese-share
+  # area (from the top) and an English-share area (from the bottom).
+  def language_ratio_svg(series, width: 600, height: 48)
+    return nil if series.length < 2
+
+    span = (series.last.date - series.first.date).to_f
+    span = 1.0 if span.zero?
+
+    points = series.map do |snap|
+      x = ((snap.date - series.first.date).to_f / span * width).round(2)
+      y = (snap.ja_share * height).round(2)
+      [x, y]
+    end
+
+    line = points.map { |x, y| "L#{x},#{y}" }.join(' ')
+    ja_path = "M0,0 #{line} L#{width},0 Z"
+    en_path = "M#{points.first[0]},#{points.first[1]} #{line} L#{width},#{height} L0,#{height} Z"
+
+    { width: width, height: height, ja_path: ja_path, en_path: en_path }
   end
 
   def parse_file(path)

@@ -274,26 +274,8 @@ table.pages th {
     border-radius: 0;
 }
 
-.ratio-bars {
-    display: flex;
-    flex-direction: row;
-    gap: 0;
-    height: 40px;
-    border-radius: 0;
-    overflow: hidden;
-}
-
-.ratio-bar {
-    height: 100%;
-    border: 1px solid #000;
-    border-radius: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 1rem;
-    min-width: fit-content;
-}
-
+/* Shared with the per-post size bar (.bar.ja-bar / .bar.en-bar in .meta),
+   not just the language-ratio summary tags. */
 .ja-bar {
     background: #000;
 }
@@ -302,41 +284,53 @@ table.pages th {
     background: #666;
 }
 
-.ratio-label {
-    color: white;
-    font-size: 0.8rem;
+.ratio-summary {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    line-height: 1.2;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
 }
 
-.lang-name {
-    font-size: 0.8rem;
+.ratio-trend {
+    display: block;
+    width: 100%;
+    height: 48px;
+    border: 1px solid #000;
+    border-radius: 0;
 }
 
-.lang-percent {
-    font-size: 0.8rem;
-    opacity: 0.9;
+.ratio-area-ja {
+    fill: #000;
+}
+
+.ratio-area-en {
+    fill: #666;
+}
+
+.ratio-trend-labels {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 0.3rem;
 }
 
 .lang-tag {
     display: inline-block;
-    padding: 0.2rem 0.4rem;
     border-radius: 0;
     font-size: 0.8rem;
-    font-weight: 600;
-    color: white;
     white-space: nowrap;
     vertical-align: baseline;
 }
 
 .lang-tag.lang-ja {
-    background: #000;
+    color: #000;
 }
 
 .lang-tag.lang-en {
-    background: #666;
+    color: #666;
 }
 
 .directory-tag {
@@ -386,19 +380,7 @@ table.pages th {
 }
 
 @media (max-width: 480px) {
-    .ratio-bars {
-        height: 35px;
-    }
-
-    .ratio-bar {
-        padding: 0 0.4rem;
-    }
-
-    .lang-name {
-        font-size: 0.8rem;
-    }
-
-    .lang-percent {
-        font-size: 0.8rem;
+    .ratio-trend {
+        height: 36px;
     }
 }

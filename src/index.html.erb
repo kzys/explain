@@ -12,27 +12,27 @@
     <main id="index">
       <% pages = self.find('src/**/*.md').sort{|a, b| b.mtime <=> a.mtime } %>
       <% max_size = pages.map(&:size).max %>
-      <% ja_size = pages.select(&:ja?).map(&:size).sum %>
-      <% en_size = pages.select(&:en?).map(&:size).sum %>
-      <% total_size = ja_size + en_size %>
-      <% ja_percent = total_size > 0 ? (ja_size.to_f / total_size * 100).round(1) : 0 %>
-      <% en_percent = total_size > 0 ? (en_size.to_f / total_size * 100).round(1) : 0 %>
+      <% ja_count = pages.count(&:ja?) %>
+      <% en_count = pages.count(&:en?) %>
+      <% ratio_series = self.language_ratio_series(en_count, ja_count) %>
+      <% ratio_chart = self.language_ratio_svg(ratio_series) %>
+      <% latest_ratio = ratio_series.last %>
 
       <div class="language-ratio">
-        <div class="ratio-bars">
-          <div class="ratio-bar ja-bar" style="width:<%= ja_percent %>%">
-            <span class="ratio-label">
-              <span class="lang-name">日本語</span>
-              <span class="lang-percent"><%= ja_percent %>% · <%= human_size(ja_size) %></span>
-            </span>
-          </div>
-          <div class="ratio-bar en-bar" style="width:<%= en_percent %>%">
-            <span class="ratio-label">
-              <span class="lang-name">English</span>
-              <span class="lang-percent"><%= en_percent %>% · <%= human_size(en_size) %></span>
-            </span>
-          </div>
+        <div class="ratio-summary">
+          <span class="lang-tag lang-ja">日本語: <%= latest_ratio.ja_count %> posts (<%= latest_ratio.ja_percent %>%)</span>
+          <span class="lang-tag lang-en">English: <%= latest_ratio.en_count %> posts (<%= latest_ratio.en_percent %>%)</span>
         </div>
+        <% if ratio_chart %>
+          <svg class="ratio-trend" viewBox="0 0 <%= ratio_chart[:width] %> <%= ratio_chart[:height] %>" preserveAspectRatio="none" role="img" aria-label="Share of English vs. Japanese posts, <%= ratio_series.first.date.strftime('%Y-%m') %> to today, ending at <%= latest_ratio.en_percent %>% English">
+            <path class="ratio-area-ja" d="<%= ratio_chart[:ja_path] %>"></path>
+            <path class="ratio-area-en" d="<%= ratio_chart[:en_path] %>"></path>
+          </svg>
+          <div class="ratio-trend-labels">
+            <span><%= ratio_series.first.date.year %></span>
+            <span>now</span>
+          </div>
+        <% end %>
       </div>
       <% grouped = self.group_by_content(pages) %>
       <% grouped.each do |base_path, group_pages| %>

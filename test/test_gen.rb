@@ -132,6 +132,126 @@ END
     assert_equal({ 'src/ja/customers.md' => 'src/ja/customer.md' }, renames)
   end
 
+  def test_parse_language_log
+    out = "\x00sha1\x002024-01-01T00:00:00-07:00\nA\tsrc/en/foo.md\n\n" \
+          "\x00sha2\x002024-01-02T00:00:00-07:00\nM\tsrc/en/foo.md\n" \
+          "R100\tsrc/ja/old.md\tsrc/ja/new.md\n\n"
+    commits = @gen.parse_language_log(out)
+
+    assert_equal(2, commits.length)
+    assert_equal('sha1', commits[0][:sha])
+    assert_instance_of(Time, commits[0][:date])
+    assert_equal([['A', 'src/en/foo.md']], commits[0][:changes])
+    assert_equal('sha2', commits[1][:sha])
+    assert_equal(
+      [['M', 'src/en/foo.md'], ['R100', 'src/ja/old.md', 'src/ja/new.md']],
+      commits[1][:changes]
+    )
+  end
+
+  def test_language_for
+    assert_equal(:ja, @gen.language_for('src/ja/foo.md'))
+    assert_equal(:en, @gen.language_for('src/en/foo.md'))
+    assert_nil(@gen.language_for('src/style.css'))
+  end
+
+  def test_build_language_history_tracks_adds_and_deletes
+    commits = [
+      { sha: 's1', date: Time.parse('2024-01-01T00:00:00Z'), changes: [['A', 'src/en/a.md']] },
+      { sha: 's2', date: Time.parse('2024-01-02T00:00:00Z'), changes: [['A', 'src/ja/b.md']] },
+      { sha: 's3', date: Time.parse('2024-01-02T12:00:00Z'), changes: [['D', 'src/en/a.md']] },
+    ]
+
+    history = @gen.build_language_history(commits)
+
+    assert_equal(2, history.length)
+    assert_equal(Date.new(2024, 1, 1), history[0].date)
+    assert_equal(1, history[0].en_count)
+    assert_equal(0, history[0].ja_count)
+    # Same-day commits collapse to the last state of that day.
+    assert_equal(Date.new(2024, 1, 2), history[1].date)
+    assert_equal(0, history[1].en_count)
+    assert_equal(1, history[1].ja_count)
+  end
+
+  def test_build_language_history_ignores_edits
+    commits = [
+      { sha: 's1', date: Time.parse('2024-01-01T00:00:00Z'), changes: [['A', 'src/en/a.md']] },
+      { sha: 's2', date: Time.parse('2024-01-02T00:00:00Z'), changes: [['M', 'src/en/a.md']] },
+    ]
+
+    history = @gen.build_language_history(commits)
+
+    assert_equal(1, history.length) # the edit-only commit doesn't change the ratio
+    assert_equal(1, history[0].en_count)
+  end
+
+  def test_build_language_history_same_language_rename_is_a_noop
+    commits = [
+      { sha: 's1', date: Time.parse('2024-01-01T00:00:00Z'), changes: [['A', 'src/ja/old.md']] },
+      { sha: 's2', date: Time.parse('2024-01-02T00:00:00Z'), changes: [['R100', 'src/ja/old.md', 'src/ja/new.md']] },
+      { sha: 's3', date: Time.parse('2024-01-03T00:00:00Z'), changes: [['D', 'src/ja/new.md']] },
+    ]
+
+    history = @gen.build_language_history(commits)
+
+    assert_equal(2, history.length) # the rename doesn't change the ratio, so no snapshot for it
+    assert_equal(1, history[0].ja_count)
+    assert_equal(0, history[1].ja_count) # delete on the new path still finds it
+  end
+
+  def test_build_language_history_cross_language_rename_moves_the_count
+    commits = [
+      { sha: 's1', date: Time.parse('2024-01-01T00:00:00Z'), changes: [['A', 'src/en/old.md']] },
+      { sha: 's2', date: Time.parse('2024-01-02T00:00:00Z'), changes: [['R100', 'src/en/old.md', 'src/ja/new.md']] },
+    ]
+
+    history = @gen.build_language_history(commits)
+
+    assert_equal(2, history.length)
+    assert_equal(1, history[0].en_count)
+    assert_equal(0, history[0].ja_count)
+    assert_equal(0, history[1].en_count)
+    assert_equal(1, history[1].ja_count)
+  end
+
+  def test_language_ratio_series_appends_live_totals_as_today
+    past = LanguageSnapshot.new(Date.new(2024, 1, 1), 100, 0)
+    @gen.instance_variable_set(:@language_history, [past])
+
+    series = @gen.language_ratio_series(120, 40)
+
+    assert_equal([past, LanguageSnapshot.new(Date.today, 120, 40)], series)
+  end
+
+  def test_language_ratio_series_replaces_any_existing_entry_for_today
+    stale_today = LanguageSnapshot.new(Date.today, 10, 10)
+    @gen.instance_variable_set(:@language_history, [stale_today])
+
+    series = @gen.language_ratio_series(120, 40)
+
+    assert_equal([LanguageSnapshot.new(Date.today, 120, 40)], series)
+  end
+
+  def test_language_ratio_svg_requires_at_least_two_points
+    assert_nil(@gen.language_ratio_svg([LanguageSnapshot.new(Date.today, 1, 1)]))
+  end
+
+  def test_language_ratio_svg_geometry
+    series = [
+      LanguageSnapshot.new(Date.new(2024, 1, 1), 0, 100),   # 100% ja
+      LanguageSnapshot.new(Date.new(2024, 1, 11), 50, 50),  # 50% ja, 10 days later
+    ]
+
+    chart = @gen.language_ratio_svg(series, width: 100, height: 40)
+
+    assert_equal(100, chart[:width])
+    assert_equal(40, chart[:height])
+    assert_includes(chart[:ja_path], 'M0,0')
+    assert_includes(chart[:ja_path], 'L100.0,20.0') # last point: x=width, y=ja_share(0.5)*height
+    assert_includes(chart[:en_path], 'L100,40 L0,40 Z') # bottom edge closes the English area
+  end
+
   def test_site_root
     { 'index.html' => '.', 'en/about.html' => '..', 'en/blog/post.html' => '../..' }.each do |url, expected|
       assert_equal(expected, @gen.site_root(Page.new.tap { |p| p.url = url }), url)
