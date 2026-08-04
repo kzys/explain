@@ -19,10 +19,6 @@
       <% latest_ratio = ratio_series.last %>
 
       <div class="language-ratio">
-        <div class="ratio-summary">
-          <span class="lang-tag lang-en">English: <%= latest_ratio.en_count %> posts (<%= latest_ratio.en_percent %>%)</span>
-          <span class="lang-tag lang-ja">日本語: <%= latest_ratio.ja_count %> posts (<%= latest_ratio.ja_percent %>%)</span>
-        </div>
         <% if ratio_chart %>
           <svg class="ratio-trend" viewBox="0 0 <%= ratio_chart[:width] %> <%= ratio_chart[:height] %>" preserveAspectRatio="none" role="img" aria-label="Share of English vs. Japanese posts, <%= ratio_series.first.date.strftime('%Y-%m') %> to today, ending at <%= latest_ratio.en_percent %>% English">
             <path class="ratio-area-ja" d="<%= ratio_chart[:ja_path] %>"></path>
@@ -33,6 +29,10 @@
             <span>now</span>
           </div>
         <% end %>
+        <div class="ratio-summary">
+          <span class="lang-tag lang-en"><i class="lang-swatch"></i>English <span class="lang-count"><%= latest_ratio.en_count %> posts · <%= latest_ratio.en_percent %>%</span></span>
+          <span class="lang-tag lang-ja"><i class="lang-swatch"></i>日本語 <span class="lang-count"><%= latest_ratio.ja_count %> posts · <%= latest_ratio.ja_percent %>%</span></span>
+        </div>
       </div>
       <% grouped = self.group_by_content(pages) %>
       <% grouped.each do |base_path, group_pages| %>

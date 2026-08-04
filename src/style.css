@@ -1,57 +1,86 @@
 :root {
     --timeline-rotation: -20deg;
     --timeline-text-width: 12em;
-    --lang-ja-color: #6d28d9;
-    --lang-en-color: #b45309;
+
+    /* Ground and ink. Not pure black on pure white - the ground is a hair
+       cool, and the ink stops short of #000 so long reads are less harsh. */
+    --bg: #fbfbfd;
+    --ink: #15151b;
+    --ink-2: #45454f;
+    --ink-muted: #71717f;
+    --rule: #e6e6ed;
+    --tick: #d2d2dc;
+    --tick-dot: #adadba;
+    --hover-bg: #f3f3f7;
+
+    /* One hue per language, used at full strength everywhere it appears -
+       the ratio chart and the per-post size bar both. */
+    --lang-ja-color: #1d4ed8;
+    --lang-en-color: #047857;
+
+    /* Type scale */
+    --t-h1: 1.55rem;
+    --t-header: 1.25rem;
+    --t-title: 1rem;
+    --t-meta: 0.78rem;
+    --t-micro: 0.72rem;
+
+    /* Spacing ramp */
+    --sp-1: 0.25rem;
+    --sp-2: 0.5rem;
+    --sp-3: 0.75rem;
+    --sp-4: 1rem;
+    --sp-6: 1.5rem;
 }
 
 body {
     font-family: sans-serif;
     margin: 0 1rem;
-    color: #000;
-    background: #fff;
-    line-height: 1.6;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.62;
 }
 
 a {
-    color: #000;
+    color: var(--ink);
 }
 
 a:hover,
 a:visited:hover {
-    background: #000;
-    color: #fff;
+    background: var(--ink);
+    color: var(--bg);
     text-decoration: none;
 }
 
 a:visited {
-    color: #666;
+    color: var(--ink-muted);
 }
 header {
     display: flex;
     justify-content: space-between;
-    font-size: 1.5rem;
-    border-bottom: 1px solid #000;
-    padding: 1rem 0;
-    margin-bottom: 1rem;
+    font-size: var(--t-header);
+    border-bottom: 1px solid var(--ink);
+    padding: var(--sp-4) 0;
+    margin-bottom: var(--sp-6);
 }
 header a,
 header a:visited {
-    color: #000;
+    color: var(--ink);
     text-decoration: none;
 }
 header .ja {
-    color: #666;
+    color: var(--ink-muted);
 }
 
 h1 {
     justify-content: space-between;
-    font-size: 2rem;
+    font-size: var(--t-h1);
+    letter-spacing: -0.01em;
 }
 
 h1 .ja {
-    color: #666;
-    font-size: 1rem;
+    color: var(--ink-muted);
+    font-size: var(--t-title);
     font-weight: normal;
 }
 
@@ -69,6 +98,13 @@ main {
     margin: 0 auto;
 }
 
+/* Article pages are read straight through, so they get a proper measure.
+   The index keeps the wider column - its rows need the room. The footer
+   follows along so its rule lines up with the content above it. */
+body.article main,
+body.article footer {
+    max-width: 38rem;
+}
 
 ul.pages {
     list-style: none;
@@ -81,12 +117,12 @@ ul.pages li {
 
 footer {
     max-width: 50rem;
-    margin: 1rem auto;
+    margin: var(--sp-6) auto;
 
-    font-size: 0.8rem;
-    border-top: 1px solid #000;
-    padding: 1rem 0;
-    color: #666;
+    font-size: var(--t-meta);
+    border-top: 1px solid var(--rule);
+    padding: var(--sp-4) 0;
+    color: var(--ink-muted);
 }
 
 table {
@@ -129,7 +165,7 @@ table.pages th {
     top: 0;
     text-align: left;
     padding-bottom: 1rem;
-    background-image: linear-gradient(to bottom, #fff, #fff 50%, rgba(255, 255, 255, 0));
+    background-image: linear-gradient(to bottom, var(--bg), var(--bg) 50%, rgba(251, 251, 253, 0));
 }
 
 @media (max-width: 480px) {
@@ -163,29 +199,34 @@ table.pages th {
     }
 }
 
+/* The per-post size bar. Same hue as the ratio chart, at the same strength -
+   one colour per language, wherever it appears. */
 .bar {
-    height: 24px;
+    height: 22px;
     border-radius: 0;
     display: flex;
     align-items: center;
-    padding: 0 8px;
-    font-size: 0.8rem;
-    color: white;
+    padding: 0 var(--sp-2);
+    font-size: var(--t-meta);
+    color: #fff;
     white-space: nowrap;
     min-width: fit-content;
 }
 
+/* Rows are separated by a hairline rather than boxed. Nothing on the index
+   is outlined at full strength, so the coloured marks stay the loudest thing. */
 #index article {
-    margin-bottom: 1rem;
+    margin-bottom: 0;
     padding: 0;
-    border: 1px solid #000;
-    border-radius: 0;
+    border-bottom: 1px solid var(--rule);
 }
 
 #index h2 {
     display: flex;
-    align-items: center;
-    font-size: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-1);
+    font-size: var(--t-title);
     margin: 0;
     padding: 0;
 }
@@ -195,47 +236,36 @@ table.pages th {
     color: inherit;
 }
 
+/* The link bleeds wider than the text column and pads the same amount back,
+   so the hover surface gets breathing room on both sides while the text
+   itself stays on the column edge, lined up with the header and footer
+   rules. The row's own hairline stays on the column, so it doesn't inherit
+   the bleed. */
 #index .article-link {
     display: block;
     text-decoration: none !important;
     color: inherit;
     position: relative;
-    padding: 1rem;
-    padding-right: 2rem;
-}
-
-#index .article-link::after {
-    content: "›";
-    position: absolute;
-    right: 0.4rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #666;
-    font-size: 1.2rem;
+    padding: var(--sp-4) var(--sp-3);
+    margin: 0 calc(var(--sp-3) * -1);
 }
 
 #index .article-link:hover,
 #index .article-link:active,
 #index .article-link:focus {
     text-decoration: none !important;
-    background: none;
+    background: var(--hover-bg);
     color: inherit;
 }
 
-#index article:has(.article-link:hover),
-#index article:has(.article-link:active),
-#index article:has(.article-link:focus) {
-    background: #f5f5f5;
-}
-
 #index .article-link h2 {
-    color: #000;
+    color: var(--ink);
 }
 
 .page-metadata {
-    margin: 0.2rem 0 0.8rem 0;
-    font-size: 0.8rem;
-    color: #666;
+    margin: var(--sp-1) 0 var(--sp-3) 0;
+    font-size: var(--t-meta);
+    color: var(--ink-muted);
     position: relative;
 }
 
@@ -256,8 +286,11 @@ table.pages th {
     transform: rotate(var(--timeline-rotation));
     transform-origin: bottom left;
     white-space: nowrap;
+    /* Tuned so the vertical gap between consecutive labels lands at about
+       one line-height - the tightest spacing that stays legible. Loosening
+       it widens the row enough to wrap, which breaks the cascade. */
     margin-right: -6rem;
-    font-size: 0.8rem;
+    font-size: var(--t-meta);
 }
 
 .page-metadata .changes-items li::before {
@@ -266,17 +299,17 @@ table.pages th {
     font-size: 0.5rem;
     line-height: 0;
     vertical-align: middle;
+    color: var(--tick-dot);
 }
 
 .language-ratio {
-    margin-bottom: 1rem;
-    padding: 1rem;
-    border: 1px solid #000;
-    border-radius: 0;
+    margin-bottom: var(--sp-6);
+    padding: 0;
+    border: none;
 }
 
 /* Shared with the per-post size bar (.bar.ja-bar / .bar.en-bar in .meta),
-   not just the language-ratio summary tags. */
+   not just the language-ratio swatches. */
 .ja-bar {
     background: var(--lang-ja-color);
 }
@@ -285,12 +318,15 @@ table.pages th {
     background: var(--lang-en-color);
 }
 
+/* Sits under the chart: the chart is the visual, this is its caption. */
 .ratio-summary {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
+    gap: 0 var(--sp-4);
+    margin-top: var(--sp-2);
+    font-size: var(--t-meta);
+    color: var(--ink);
 }
 
 .ratio-trend {
@@ -312,43 +348,63 @@ table.pages th {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    font-size: 0.75rem;
-    color: #666;
-    margin-top: 0.3rem;
+    font-size: var(--t-micro);
+    color: var(--ink-muted);
+    margin-top: var(--sp-1);
 }
 
+/* Identity comes from the swatch, so the words stay in ink - a hue picked
+   for a 48px fill is not a hue that reads well at 12px. */
 .lang-tag {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
     border-radius: 0;
-    font-size: 0.8rem;
+    font-size: var(--t-meta);
     white-space: nowrap;
     vertical-align: baseline;
 }
 
-.lang-tag.lang-ja {
-    color: var(--lang-ja-color);
+.lang-swatch {
+    display: block;
+    width: 9px;
+    height: 9px;
+    flex: none;
 }
 
-.lang-tag.lang-en {
-    color: var(--lang-en-color);
+.lang-tag.lang-ja .lang-swatch {
+    background: var(--lang-ja-color);
 }
 
+.lang-tag.lang-en .lang-swatch {
+    background: var(--lang-en-color);
+}
+
+.lang-tag .lang-count {
+    font-style: normal;
+    color: var(--ink-muted);
+}
+
+/* An eyebrow above the title rather than a filled badge beside it, so it
+   never competes with the title horizontally. */
 .directory-tag {
     display: inline-block;
-    padding: 0 8px;
+    padding: 0;
     border-radius: 0;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: white;
-    background: #000;
+    font-size: var(--t-micro);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    background: none;
     white-space: nowrap;
-    margin-right: 0.4rem;
+    margin-right: 0;
 }
 
 .language-section {
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #000;
+    margin-bottom: var(--sp-4);
+    padding-bottom: var(--sp-4);
+    border-bottom: 1px solid var(--rule);
 }
 
 .language-section:last-child {
@@ -357,26 +413,33 @@ table.pages th {
     border-bottom: none;
 }
 
+/* A post's own section headings, shown as a table of contents. Separated by
+   hairline ticks rather than slashes, so the list reads as structure rather
+   than as a run of punctuation. */
 .headlines {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5em;
+    gap: 0 var(--sp-3);
     list-style: none;
-    margin: 0.4rem 0 0 0;
+    margin: var(--sp-1) 0 0 0;
     padding: 0;
-    font-size: 0.8rem;
-    line-height: 1.2;
-    color: #666;
+    font-size: var(--t-meta);
+    line-height: 1.5;
+    color: var(--ink-muted);
 }
 
-.headlines li::before {
-    content: "/";
-    margin-right: 0.2rem;
-    color: #666;
+.headlines li {
+    position: relative;
 }
 
-.headlines li:first-child::before {
-    content: none;
+.headlines li + li::before {
+    content: "";
+    position: absolute;
+    left: calc(var(--sp-3) / -2);
+    top: 0.42em;
+    width: 1px;
+    height: 0.85em;
+    background: var(--tick);
 }
 
 @media (max-width: 480px) {
