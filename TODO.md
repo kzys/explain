@@ -74,3 +74,34 @@ necessarily a judgement about this line specifically.)
 
 Needs a decision either way: drop the trailing space, or narrow `tidy`'s scope
 so it leaves content files alone.
+
+## Drafts, if this repository becomes public
+
+The 21 `draft: true` files are the only content a public repository would expose
+that the site doesn't already serve. History adds nothing on top of them — every
+line trimmed from a published post survives in the published version.
+
+Two are worth deciding on rather than accepting by default:
+
+- `src/en/homelab/*` places a machine at family's home in Japan, and says it runs
+  as an exit node to get a residential Japanese IP because that is harder to ban
+  than a commercial VPN. A location detail and a method, neither published.
+- `src/ja/opinion-is-my-own.md` and `src/ja/wework.md` stop mid-sentence about
+  former employers.
+
+Moving a draft out of `src/` at that point doesn't help — it is already in the
+history, so the choice is to accept them or to rewrite history first.
+
+## No LICENSE
+
+The repository has no LICENSE, which only starts to matter once it is public.
+The default then is all rights reserved for everything, including the generator,
+which readers will reasonably assume is theirs to copy.
+
+The two halves want different answers: the posts are the kind of thing to keep,
+the generator is the kind of thing to give away. So a split — a permissive
+license for `gen.rb`, `dev.rb`, `view/` and `test/`, and something explicit for
+`src/` — rather than one license for the whole tree.
+
+Undecided: which permissive license, and whether `src/` should be
+all-rights-reserved or a Creative Commons variant.
