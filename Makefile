@@ -10,8 +10,8 @@ serve:
 	python3 -m http.server 8000 --directory public
 .PHONY: serve
 
-dev: build
-	python3 dev.py
+dev:
+	bundle exec ruby dev.rb
 .PHONY: dev
 
 tidy:
