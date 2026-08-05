@@ -6,10 +6,6 @@ test:
 	bundle exec ruby test/*.rb
 .PHONY: test
 
-serve:
-	python3 -m http.server 8000 --directory public
-.PHONY: serve
-
 dev:
 	bundle exec ruby dev.rb
 .PHONY: dev
