@@ -13,10 +13,24 @@
     --tick-dot: #adadba;
     --hover-bg: #f3f3f7;
 
-    /* One hue per language, used at full strength everywhere it appears -
-       the ratio chart and the per-post size bar both. */
+    /* Visited links only. Three steps darker than --ink-muted, which clears
+       4.5:1 on --hover-bg (4.53:1) where the muted ink does not (4.34:1) - a
+       visited link is hoverable, so it has to hold contrast on the tint too. */
+    --link-visited: #6e6e7c;
+
+    /* One hue, two steps - Japanese dark, English light. Two hues of similar
+       lightness collapse for tritanopia (the old blue/emerald pair separated by
+       only dE 5.4 there); two steps of one hue differ in lightness alone, which
+       is the channel that survives every kind of colour blindness. A single hue
+       also cannot read as a flag, which two of them always risk.
+
+       Used at full strength everywhere they appear - the ratio chart, the
+       summary swatches and the per-post size bar. The label colour has to follow
+       the fill: white holds on the dark step and fails on the light one. */
     --lang-ja-color: #1d4ed8;
-    --lang-en-color: #047857;
+    --lang-en-color: #60a5fa;
+    --lang-ja-label: #fff;
+    --lang-en-label: var(--ink);
 
     /* Type scale */
     --t-h1: 1.55rem;
@@ -41,19 +55,32 @@ body {
     line-height: 1.62;
 }
 
+/* The text stays ink and the rule carries the colour, so a paragraph keeps an
+   even weight. The rule uses the same two steps of blue as the language chart
+   rather than a colour of its own. #60a5fa is far too weak to be type at
+   2.5:1, but it is legible as a 2px rule, which is all it is asked to be. */
 a {
     color: var(--ink);
+    text-decoration-color: var(--lang-ja-color);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
 }
 
+/* Hover tints rather than inverting, and the underline stays put - a link
+   never stops looking like a link mid-interaction. Same surface the index rows
+   use, so the whole site has one hover language. */
 a:hover,
 a:visited:hover {
-    background: var(--ink);
-    color: var(--bg);
-    text-decoration: none;
+    background: var(--hover-bg);
 }
 
+/* Visited mutes the text and drops the rule to the light step. Browsers only
+   honour colour properties on :visited - text-decoration-style is dropped for
+   privacy, so a dotted rule is not available here however well it would read.
+   This rule sits after :hover so the visited colour survives being hovered. */
 a:visited {
-    color: var(--ink-muted);
+    color: var(--link-visited);
+    text-decoration-color: var(--lang-en-color);
 }
 header {
     display: flex;
@@ -208,7 +235,6 @@ table.pages th {
     align-items: center;
     padding: 0 var(--sp-2);
     font-size: var(--t-meta);
-    color: #fff;
     white-space: nowrap;
     min-width: fit-content;
 }
@@ -308,14 +334,17 @@ table.pages th {
     border: none;
 }
 
-/* Shared with the per-post size bar (.bar.ja-bar / .bar.en-bar in .meta),
-   not just the language-ratio swatches. */
+/* The per-post size bar in .meta. Each carries its own label colour, so the
+   two bars differ in fill lightness and in label - identity never rests on
+   colour alone. */
 .ja-bar {
     background: var(--lang-ja-color);
+    color: var(--lang-ja-label);
 }
 
 .en-bar {
     background: var(--lang-en-color);
+    color: var(--lang-en-label);
 }
 
 /* Sits under the chart: the chart is the visual, this is its caption. */

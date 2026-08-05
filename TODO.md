@@ -3,33 +3,6 @@
 Design questions that were deliberately parked rather than forgotten. Each
 records what was already measured, so the work doesn't have to be re-derived.
 
-## Language hues
-
-Currently blue `#1d4ed8` (Japanese) and emerald `#047857` (English), set as
-`--lang-ja-color` / `--lang-en-color` in `src/style.css`. Changing them is a
-two-line edit — they're used at full strength by both the ratio chart and the
-per-post size bar.
-
-The open problem is association, not legibility: blue beside green reads as the
-Cascadia flag, and for a Seattle site it also lands on the local football
-palette. Several alternatives were mocked up and none were an improvement worth
-switching for.
-
-Constraints learned along the way, all measured rather than guessed:
-
-- **Purple and magenta are the reliable flag-free anchors.** National flags are
-  drawn almost entirely from red, blue, green, yellow, white and black. Purple
-  is effectively absent (the dye was historically ruinous), magenta entirely so.
-  A pair anchored on either stops parsing as a flag whatever sits opposite.
-- **Red + blue** reads as the Korean flag. **Forest + burgundy** fails
-  colourblind separation outright (ΔE 1.0 under deuteranopia — indistinguishable).
-  **Emerald + crimson** also fails at ΔE 6.0, the classic red-green trap.
-- **Teal and cyan keep failing the chroma floor** at any darkness that clears
-  contrast on the ground — they end up reading grey rather than coloured.
-- Validate candidates with the dataviz skill's `validate_palette.js`, against
-  surface `#fbfbfd`. Targets: CVD ΔE ≥ 8 between the two hues, ≥ 4.5:1 for a
-  label on its own fill, and ≥ 3:1 for each fill on the ground.
-
 ## Index row affordance
 
 Index titles compute to `rgb(21,21,27)` with `text-decoration: none` — identical
