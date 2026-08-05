@@ -10,6 +10,7 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.13.1)
     simplecov_json_formatter (0.1.4)
+    webrick (1.9.2)
 
 PLATFORMS
   ruby
@@ -19,6 +20,7 @@ DEPENDENCIES
   markly (= 0.9.1)
   minitest (= 5.25.5)
   simplecov
+  webrick (= 1.9.2)
 
 BUNDLED WITH
    2.5.16

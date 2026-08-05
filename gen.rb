@@ -82,6 +82,11 @@ end
 class Gen
   CACHEBUST_EXTS = %w[.css .js .ico .svg .woff .woff2 .ttf .eot]
 
+  # Builds the whole site, as the command line does.
+  def self.build
+    new('src', 'public', YAML.load_file('config.yaml')).run
+  end
+
   def initialize(src_dir, dest_dir, config = {}, view_dir: 'view')
     @src_dir = Pathname(src_dir)
     @dest_dir = Pathname(dest_dir)
@@ -382,5 +387,4 @@ class Gen
   end
 end
 
-config = YAML.load_file('config.yaml')
-Gen.new('src', 'public', config).run if __FILE__ == $0
+Gen.build if __FILE__ == $0
