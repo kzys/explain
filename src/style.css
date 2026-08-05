@@ -55,6 +55,18 @@ body {
     line-height: 1.62;
 }
 
+/* Index rows bleed 12px past the column and the bilingual rails sit on that
+   bleed edge, so the column needs at least 12px of margin outside it to have
+   anywhere to put them. main is 50rem centred, which leaves the column at
+   16px + max(0, (viewport - 832) / 2) - so the rails only clear 16px once the
+   viewport passes 856px, and below 832px they are pinned 4px off the screen
+   edge. Widening the margin under that threshold buys the room back. */
+@media (max-width: 855px) {
+    body {
+        margin: 0 1.75rem;
+    }
+}
+
 /* The text stays ink and the rule carries the colour, so a paragraph keeps an
    even weight. The rule uses the same two steps of blue as the language chart
    rather than a colour of its own. #60a5fa is far too weak to be type at
@@ -432,8 +444,8 @@ table.pages th {
 
 /* A bilingual pair is one post written twice, so it has to read as a pair.
    Two cues do that: the halves sit closer to each other than to neighbouring
-   posts, and a short rail runs down the bleed margin beside them. The rail is
-   inset top and bottom so it reads as a bracket rather than a border. */
+   posts, and a rail runs down the bleed margin on each side of them. The rails
+   are inset top and bottom so the pair reads as bracketed rather than boxed. */
 .language-section {
     margin-bottom: 0;
     padding-bottom: 0;
@@ -444,14 +456,27 @@ table.pages th {
     position: relative;
 }
 
-#index article:has(.language-section)::before {
+/* z-index because the rails and the row's hover surface sit at the same x.
+   Both are positioned with z-index auto, so they would paint in tree order and
+   the hover surface - being the later sibling - would cover the rail up,
+   breaking the bracket apart at the moment the row is pointed at. */
+#index article:has(.language-section)::before,
+#index article:has(.language-section)::after {
     content: "";
     position: absolute;
-    left: calc(var(--sp-3) * -1);
     top: var(--sp-6);
     bottom: var(--sp-6);
     width: 2px;
     background: var(--tick);
+    z-index: 1;
+}
+
+#index article:has(.language-section)::before {
+    left: calc(var(--sp-3) * -1);
+}
+
+#index article:has(.language-section)::after {
+    right: calc(var(--sp-3) * -1);
 }
 
 #index .language-section .article-link {
