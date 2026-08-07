@@ -2,6 +2,8 @@
 
 In July 2026, I broke my right wrist, had surgery and got [a plate](https://trimedortho.com/portfolio-items/volar-bearing-plate/) in the wrist.
 
+Breaking a dominant hand sucks, of course, but it was interesting to see all of the technology involved. My wrist isn't fully recovered yet, but I do appreciate that I'm unlikely to face long-term consequences.
+
 ## 07/09
 
 I fell off my bike and broke my right wrist, though at that time, I thought I'd just sprained it. It was around 7 p.m. and urgent care might be closed. ER could be too expensive for a sprain.
@@ -41,3 +43,9 @@ I bought a pill organizer to take pain killers in rotation.
 ## 07/27
 
 The new splint I got after the surgery was shorter and I could use both hands to type. However, it was causing acute pain. Icing worked well this time.
+
+## 08/06
+
+I had a post-op visit and finally took off the splint. It was a huge relief since the splint was causing itchiness. The scar of the surgery was gross, to be honest.
+
+Then I got a new thermoplastic splint. Unlike the previous one, it was designed to be taken off occasionally.
