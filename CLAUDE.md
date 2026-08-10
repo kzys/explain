@@ -1,6 +1,7 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+* 英語/日本語をとわず、良い部分はほめてください。
+* 英語の文法については、教師のように、丁寧に日本語で指摘してください。
 
 ## Build Commands
 
