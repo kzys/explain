@@ -8,7 +8,7 @@
 
 Hacker News の[ガイドライン](https://news.ycombinator.com/newsguidelines.html)では、たしかに政治はオフトピックとされている。
 
-> Off-Topic: Most stories about politics, or crime, or sports, or celebrities, unless they're evidence of some interesting new phenomenon. Videos of pratfalls or disasters, or cute animal pictures. If they'd cover it on TV news, it's probably off-topic. 
+> Off-Topic: Most stories about politics, or crime, or sports, or celebrities, unless they're evidence of some interesting new phenomenon. Videos of pratfalls or disasters, or cute animal pictures. If they'd cover it on TV news, it's probably off-topic.
 
 しかし「言論の自由」について議論しつつも、政治について議論しないというのは、だいぶ難しいと思う。
 
