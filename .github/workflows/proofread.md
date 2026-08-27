@@ -7,6 +7,7 @@ on:
     paths:
       - "src/en/**.md"
       - "src/ja/**.md"
+      - ".github/workflows/proofread.md"
   workflow_dispatch:
 
 permissions:
@@ -51,6 +52,9 @@ timeout-minutes: 10
   ```
   git log --since='7 days ago' --name-only --pretty=format: -- src/en src/ja
   ```
+
+プルリクエストがこのワークフロー自身 (`.github/workflows/proofread.md`) だけを変更している
+ときは、後者の `git log` のほうを使ってください。ワークフローの動作を試すためです。
 
 該当するファイルがなければ、何も書かずに終了してください。
 
